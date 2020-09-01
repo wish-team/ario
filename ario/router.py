@@ -1,9 +1,10 @@
 from dataclasses import dataclass
+from typing import List
 
 
 @dataclass
 class Endpoint:
-    method: str
+    method: List[str]
     route: str
 
 
@@ -25,13 +26,13 @@ class RouterController:
 
     @staticmethod
     def get_instance():
-        if __instance is None:
+        if RouterController.__instance is None:
             RouterController()
         return RouterController.__instance
 
 
     def __init__(self):
-        if __instance is None:
+        if RouterController.__instance is None:
             self.routes = []
             RouterController.__instance = self
         else:
@@ -42,9 +43,13 @@ class RouterController:
         pass
     
 
-    def route(**kwargs):
-        def wrapper():
-            router = cls()
+    def route(self, method, route):
+        print(method)
+        def wrapper(cls):
+            print(cls)
+            router = cls(method, route)
             self.routes.append(router)
+
+        return wrapper
 
 
