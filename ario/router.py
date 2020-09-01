@@ -1,6 +1,24 @@
 from dataclasses import dataclass
 
 
+@dataclass
+class Endpoints:
+    method: str
+    route: str
+
+
+    def __call__(self):
+        print(f"{self.route} called with {self.method}")
+
+
+    def __eq__(self, other):
+        if (self.method == other.method 
+                and self.route == other.route):
+            return True
+        else:
+            return False
+
+
 class RouterController:
     __instance = None
 
