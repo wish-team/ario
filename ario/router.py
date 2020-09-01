@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class Endpoints:
+class Endpoint:
     method: str
     route: str
 
@@ -42,8 +42,8 @@ class RouterController:
         pass
     
 
-    def route():
-        def wrapper(cls):
+    def route(cls):
+        def wrapper():
             router = cls()
             self.routes.append(router)
 
