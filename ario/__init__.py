@@ -1,2 +1,2 @@
 from .application import Application
-from .router import RouteData, RouterController
+from .router import Endpoint, RouterController
