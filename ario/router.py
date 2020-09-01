@@ -42,7 +42,7 @@ class RouterController:
         pass
     
 
-    def route(cls):
+    def route(**kwargs):
         def wrapper():
             router = cls()
             self.routes.append(router)
