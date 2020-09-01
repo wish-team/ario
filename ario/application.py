@@ -2,7 +2,6 @@
 
 class Application:
     def __init__(self, controller=None):
-        self.routes = []
         if controller is not None:
             self.controller= controller
 
