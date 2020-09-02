@@ -22,5 +22,10 @@ class Request:
 
 
     @Lazy
+    def method(self):
+        return self.environ['REQUEST_METHOD'].lower()
+
+
+    @Lazy
     def path(self):
         return self.environ['PATH_INFO'].lower()
