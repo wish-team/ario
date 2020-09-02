@@ -22,6 +22,11 @@ class Request:
 
 
     @Lazy
+    def content_type(self):
+        return self.environ.get("CONTENT_TYPE")
+
+
+    @Lazy
     def method(self):
         return self.environ['REQUEST_METHOD'].lower()
 
