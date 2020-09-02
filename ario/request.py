@@ -19,3 +19,8 @@ class Request:
     @Lazy
     def content_length(self):
         return self.environ.get("CONTENT_LENGTH")
+
+
+    @Lazy
+    def path(self):
+        return self.environ['PATH_INFO'].lower()
