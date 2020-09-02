@@ -11,3 +11,11 @@ class Lazy:
         return val
 
 
+class Request: 
+    def __init__(self, environ):
+        self.environ = environ
+
+
+    @Lazy
+    def content_length(self):
+        return self.environ.get("CONTENT_LENGTH")
