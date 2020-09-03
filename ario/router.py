@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 from ario.request import Request
+import pdb
 
 
 @dataclass
@@ -53,25 +54,38 @@ class RouterController:
 
     def route(self, method, route):
         def wrapper(cls):
-            print(route)
+            nonlocal route
             route = route.replace("/", "", 1)
             tokens = route.split("/")
+            tokens.insert(0, "/")
             routes = self.routes
+            routes = [routes]
             for i in range(len(tokens)):
-                if routes["path"] != tokens[i]:
-                    continue 
-                if len(tokens) - 1 == i:
+                if len(routes) == 0:
                     new_route = {
-                        "path": tokens[i],
-                        "method": [method],
-                        "handler": cls(method, route),
-                        "childs": []
-                    }
-                    routes['childs'].append(new_route)
+                            "path": tokens[i],
+                            "method": [method],
+                            "handler": cls(method, route),
+                            "childs": []
+                        }
+                    routes.append(new_route)
+                    if len(tokens) - 1 == i:
+                        break
+                for r in routes:    
+                    if r["path"] != tokens[i]:
+                        continue 
+                    if len(tokens) - 1 == i:
+                        new_route = {
+                            "path": tokens[i],
+                            "method": [method],
+                            "handler": cls(method, route),
+                            "childs": []
+                        }
+                        r['childs'].append(new_route)
+                    else:
+                        routes = r["childs"]
                     break
-                else:
-                    routes = routes["childs"]
-            print(routes)
+            print(self.routes)
         return wrapper
 
 
