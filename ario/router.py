@@ -9,7 +9,6 @@ class Endpoint:
     method: List[str]
     route: str
 
-
     def __call__(self):
         print(f"{self.route} called with {self.method}")
 
@@ -52,40 +51,41 @@ class RouterController:
         path = req.path
 
 
+    def make_route_tree(self, route, method, cls):
+        route = route.replace("/", "", 1)
+        tokens = route.split("/")
+        tokens.insert(0, "/")
+        routes = self.routes
+        routes = [routes]
+        for i in range(len(tokens)):
+            if len(routes) == 0:
+                new_route = {
+                        "path": tokens[i],
+                        "method": method,
+                        "handler": cls(method, route),
+                        "childs": []
+                    }
+                for j in range(i, len(tokens)):
+                routes.append(new_route)
+                break
+            for r in routes:    
+                if r["path"] != tokens[i]:
+                    continue 
+                if len(tokens) - 1 == i:
+                    new_route = {
+                        "path": tokens[i],
+                        "method": method,
+                        "handler": cls(method, route),
+                        "childs": []
+                    }
+                    r['childs'].append(new_route)
+                else:
+                    routes = r["childs"]
+                break
+
+
     def route(self, method, route):
         def wrapper(cls):
-            nonlocal route
-            route = route.replace("/", "", 1)
-            tokens = route.split("/")
-            tokens.insert(0, "/")
-            routes = self.routes
-            routes = [routes]
-            for i in range(len(tokens)):
-                if len(routes) == 0:
-                    new_route = {
-                            "path": tokens[i],
-                            "method": [method],
-                            "handler": cls(method, route),
-                            "childs": []
-                        }
-                    routes.append(new_route)
-                    if len(tokens) - 1 == i:
-                        break
-                for r in routes:    
-                    if r["path"] != tokens[i]:
-                        continue 
-                    if len(tokens) - 1 == i:
-                        new_route = {
-                            "path": tokens[i],
-                            "method": [method],
-                            "handler": cls(method, route),
-                            "childs": []
-                        }
-                        r['childs'].append(new_route)
-                    else:
-                        routes = r["childs"]
-                    break
+            self.make_route_tree(route, method, cls)
             print(self.routes)
         return wrapper
-
-
