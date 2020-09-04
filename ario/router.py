@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from typing import List
 from ario.request import Request
-import pdb
 
 
 @dataclass
@@ -70,6 +69,10 @@ class RouteNode:
         return tokens
 
 
+    def __repr__(self):
+        return f"path: {self.path}, methods: {self.method}, \n childs: {self.childs} \n"
+
+
 class RouterController:
     __instance = None
 
@@ -83,7 +86,7 @@ class RouterController:
 
     def __init__(self):
         if RouterController.__instance is None:
-            self.routes = RouteNode("/", [], None)
+            self.routes = RouteNode([], "/", None)
             RouterController.__instance = self
         else:
             raise Exception("Controller already instantiated")
@@ -93,57 +96,6 @@ class RouterController:
         req = Request(environ)
         method  = req.method
         path = req.path
-
-
-    def make_route_tree(self, route, method, cls):
-        route = route.replace("/", "", 1)
-        tokens = route.split("/")
-        routes = self.routes['childs']
-        for i in range(len(tokens)):
-            if len(routes) == 0:
-                if len(tokens) - 1 == i:
-                    new_route = {
-                            "path": tokens[i],
-                            "method": method,
-                            "handler": cls(method, route),
-                            "childs": []
-                        }
-                else:
-                    new_route = {
-                            "path": tokens[i],
-                            "method": [],
-                            "handler": None,
-                            "childs": []
-                        }
-                routes.append(new_route)
-                routes = new_route['childs']
-                continue
-            for (j, r) in enumerate(routes):    
-                if r["path"] != tokens[i]:
-                    if j == len(routes) - 1:
-                        if len(tokens) - 1 == i:
-                            new_route = {
-                                    "path": tokens[i],
-                                    "method": method,
-                                    "handler": cls(method, route),
-                                    "childs": []
-                                }
-                        else:
-                            new_route = {
-                                    "path": tokens[i],
-                                    "method": [],
-                                    "handler": None,
-                                    "childs": []
-                                }
-                    routes.append(new_route)
-                    routes = new_route['childs']
-                    continue 
-                if len(tokens) - 1 == i:
-                    r['method'] = method 
-                    r['handler'] = cls(method, route) 
-                else:
-                    routes = r["childs"]
-                break
 
 
     def route(self, method, route):
