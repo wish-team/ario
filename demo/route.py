@@ -9,9 +9,29 @@ from ario import RouterController, Endpoint, Application
 
 control = RouterController()
 
-@control.route(method=["GET", "PUT"], route="/user")
+@control.route(method=["GET", "PUT", "INSERT"], route="/user")
 class UserEndpoint(Endpoint):
-    pass
+    def get(request, response):
+        data = b'Hello, World!\n'
+        status = '200 OK'
+        response_headers = [
+            ('Content-type', 'text/plain'),
+            ('Content-Length', str(len(data)))
+        ]
+        response(status, response_headers)
+        return data
+
+
+    def insert(request, response):
+        print("here")
+        data = b'Hello, World!\n'
+        status = '200 OK'
+        response_headers = [
+            ('Content-type', 'text/plain'),
+            ('Content-Length', str(len(data)))
+        ]
+        response(status, response_headers)
+        return data
 
 
 @control.route(method=["GET", "POST"], route="/dashboard/baz")
