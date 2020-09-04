@@ -7,8 +7,6 @@ sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
 from ario import Application, RouterController, Endpoint, Request 
 
-control = RouterController()
-
 def controller(environ, start_response):
     """Simplest possible application object"""
     req = Request(environ)
@@ -28,4 +26,4 @@ def controller(environ, start_response):
     return iter([data])
 
 
-app = Application(control)
+app = Application(controller)
