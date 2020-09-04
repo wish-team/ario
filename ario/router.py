@@ -62,6 +62,26 @@ class RouteNode:
                 break
 
 
+    def find_node(self, route):
+        tokens = RouteNode.__tokenize_route(route)
+        if path == self.path:
+            return (self.handler, self.method)
+        routes = self.childs
+        for i in range(len(tokens)):
+            match_flag = False
+            for (j, r) in enumerate(routes):
+                if r.path != tokens[i]:
+                    continue
+                match_flag = True
+                if len(tokens) - 1 == i:
+                    return (r.handler, r.method)
+                else:
+                    routes = r.childs
+                break
+            if not match_flag:
+                return None, None
+
+
     @staticmethod
     def __tokenize_route(route):
         route = route.replace("/", "", 1)
@@ -103,3 +123,5 @@ class RouterController:
             self.routes.add_node(route, method, cls)
             print(self.routes)
         return wrapper
+
+
