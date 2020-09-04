@@ -54,10 +54,7 @@ class RouterController:
     def make_route_tree(self, route, method, cls):
         route = route.replace("/", "", 1)
         tokens = route.split("/")
-        tokens.insert(0, "/")
-        routes = self.routes
-        routes = [routes]
-        pdb.set_trace()
+        routes = self.routes['childs']
         for i in range(len(tokens)):
             if len(routes) == 0:
                 if len(tokens) - 1 == i:
@@ -77,17 +74,29 @@ class RouterController:
                 routes.append(new_route)
                 routes = new_route['childs']
                 continue
-            for r in routes:    
+            for (j, r) in enumerate(routes):    
                 if r["path"] != tokens[i]:
+                    if j == len(routes) - 1:
+                        if len(tokens) - 1 == i:
+                            new_route = {
+                                    "path": tokens[i],
+                                    "method": method,
+                                    "handler": cls(method, route),
+                                    "childs": []
+                                }
+                        else:
+                            new_route = {
+                                    "path": tokens[i],
+                                    "method": [],
+                                    "handler": None,
+                                    "childs": []
+                                }
+                    routes.append(new_route)
+                    routes = new_route['childs']
                     continue 
                 if len(tokens) - 1 == i:
-                    new_route = {
-                        "path": tokens[i],
-                        "method": method,
-                        "handler": cls(method, route),
-                        "childs": []
-                    }
-                    r['childs'].append(new_route)
+                    r['method'] = method 
+                    r['handler'] = cls(method, route) 
                 else:
                     routes = r["childs"]
                 break
