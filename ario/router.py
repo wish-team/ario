@@ -29,6 +29,11 @@ class RouteNode:
         self.childs = childs
 
 
+    @staticmethod
+    def __tokenize_route(route):
+        route = route.replace("/", "", 1)
+        tokens = route.split("/")
+        return tokens
 
 
 class RouterController:
