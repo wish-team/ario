@@ -13,6 +13,12 @@ control = RouterController()
 class UserEndpoint(Endpoint):
     pass
 
+
 @control.route(method=["GET"], route="/dashboard/baz/cux")
+class DashboardEndpoint(Endpoint):
+    pass
+
+
+@control.route(method=["GET"], route="/user/test/foo")
 class DashboardEndpoint(Endpoint):
     pass
