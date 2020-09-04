@@ -57,17 +57,26 @@ class RouterController:
         tokens.insert(0, "/")
         routes = self.routes
         routes = [routes]
+        pdb.set_trace()
         for i in range(len(tokens)):
             if len(routes) == 0:
-                new_route = {
-                        "path": tokens[i],
-                        "method": method,
-                        "handler": cls(method, route),
-                        "childs": []
-                    }
-                for j in range(i, len(tokens)):
+                if len(tokens) - 1 == i:
+                    new_route = {
+                            "path": tokens[i],
+                            "method": method,
+                            "handler": cls(method, route),
+                            "childs": []
+                        }
+                else:
+                    new_route = {
+                            "path": tokens[i],
+                            "method": [],
+                            "handler": None,
+                            "childs": []
+                        }
                 routes.append(new_route)
-                break
+                routes = new_route['childs']
+                continue
             for r in routes:    
                 if r["path"] != tokens[i]:
                     continue 

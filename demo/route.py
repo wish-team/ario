@@ -9,6 +9,10 @@ from ario import RouterController, Endpoint
 
 control = RouterController()
 
-@control.route(method=["GET"], route="/user")
+@control.route(method=["GET"], route="/user/test/foo/baz/bar")
 class UserEndpoint(Endpoint):
+    pass
+
+@control.route(method=["GET"], route="/dashboard/baz/cux")
+class DashboardEndpoint(Endpoint):
     pass
