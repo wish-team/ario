@@ -21,6 +21,16 @@ class Endpoint:
             return False
 
 
+class RouteNode:
+    def __init__(self, method, path, handler=None, childs=[]):
+        self.method = method
+        self.path = path
+        self.handler = handler
+        self.childs = childs
+
+
+
+
 class RouterController:
     __instance = None
 
