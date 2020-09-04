@@ -29,6 +29,40 @@ class RouteNode:
         self.childs = childs
 
 
+    def add_node(self, route, method, handler):
+        tokens = RouteNode.__tokenize_route(route)
+        routes = self.childs
+        for i in range(len(tokens)):
+            if len(routes) == 0:
+                if isinstance(handler, Endpoint):
+                    handler = handler(method, route)
+                if len(tokens) - 1 == i:
+                    node = RouteNode(method, tokens[i], handler, [])
+                else:
+                    node = RouteNode([], tokens[i], [], [])
+                routes.append(node)
+                routes = node.childs
+                continue
+            for (j, r) in enumerate(routes):
+                if r.path != tokens[i]:
+                    if j == len(routes) - 1:
+                        if len(tokens) - 1 == i:
+                            node = RouteNode(method, tokens[i], handler, [])
+                        else:
+                            node = RouteNode([], tokens[i], [], [])
+                    routes.append(node)
+                    routes = node.childs
+                    continue
+                if len(tokens) - 1 == i:
+                    r.method = method
+                    if isinstance(handler, Endpoint):
+                        handler = handler(method, route)
+                    r.handdler = handler
+                else:
+                    routes = r.childs
+                break
+
+
     @staticmethod
     def __tokenize_route(route):
         route = route.replace("/", "", 1)
@@ -49,12 +83,7 @@ class RouterController:
 
     def __init__(self):
         if RouterController.__instance is None:
-            self.routes = {
-                    "path": "/",
-                    "method": [],
-                    "handler": None,
-                    "childs": []
-                }
+            self.routes = RouteNode("/", [], None)
             RouterController.__instance = self
         else:
             raise Exception("Controller already instantiated")
@@ -119,6 +148,6 @@ class RouterController:
 
     def route(self, method, route):
         def wrapper(cls):
-            self.make_route_tree(route, method, cls)
+            self.routes.add_node(route, method, cls)
             print(self.routes)
         return wrapper
