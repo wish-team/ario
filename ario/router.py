@@ -29,6 +29,7 @@ class RouteNode:
 
 
     def add_node(self, route, method, handler):
+        method = [m.lower() for m in method]
         tokens = RouteNode.__tokenize_route(route)
         routes = self.childs
         for i in range(len(tokens)):
@@ -116,12 +117,14 @@ class RouterController:
         req = Request(environ)
         method  = req.method
         path = req.path
+        print(path)
         handler, methods = self.routes.find_node(path)
+        print(methods)
         if method in methods:
+            req = Request(environ)
             func = getattr(handler, method)
-            func()
-        print(handler)
-        print(method)
+            ret = func(req, start_response)
+            return iter([ret])
 
 
     def route(self, method, route):
