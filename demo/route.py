@@ -34,9 +34,17 @@ class UserEndpoint(Endpoint):
         return data
 
 
-@control.route(method=["GET", "POST"], route="/dashboard/baz")
+@control.route(method=["GET", "POST"], route="/")
 class DashboardEndpoint(Endpoint):
-    pass
+    def get(request , response):
+        data = b'This is Route\n'
+        status = '200 OK'
+        response_headers = [
+            ('Content-type', 'text/plain'),
+            ('Content-Length', str(len(data)))
+        ]
+        response(status, response_headers)
+        return data
 
 
 @control.route(method=["GET", "POST"], route="/user/test")
