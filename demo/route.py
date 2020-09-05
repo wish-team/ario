@@ -51,4 +51,16 @@ class DashboardEndpoint(Endpoint):
 class DashboardEndpoint(Endpoint):
     pass
 
+
+@control.route(default=True)
+def not_found(request, response): 
+    data = b'400 Not Found\n'
+    status = '404 Not Found'
+    response_headers = [
+        ('Content-type', 'text/plain'),
+        ('Content-Length', str(len(data)))
+    ]
+    response(status, response_headers)
+    return data
+
 app = Application(control)
