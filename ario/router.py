@@ -67,6 +67,10 @@ class RouteNode:
                 break
 
 
+    def add_default_node(self, handler):
+        self.default = handler
+
+
     def find_node(self, route):
         tokens = RouteNode.__tokenize_route(route)
         if route == self.path:
@@ -124,16 +128,23 @@ class RouterController:
         print(path)
         handler, methods = self.routes.find_node(path)
         print(methods)
+        if methods == None or handler == None:
+            ret = self.routes.default(req, start_response)
+            return iter([ret])
         if method in methods:
             req = Request(environ)
             func = getattr(handler, method)
             ret = func(req, start_response)
             return iter([ret])
+        self.routes.default(req, start_response)
 
 
-    def route(self, method, route):
-        def wrapper(cls):
-            self.routes.add_node(route, method, cls)
+    def route(self, method=[], route=None, default=False):
+        def wrapper(handler):
+            if default:
+                self.routes.add_default_node(handler)
+                return
+            self.routes.add_node(route, method, handler)
             print(self.routes)
         return wrapper
 
