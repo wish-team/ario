@@ -23,7 +23,10 @@ class Request:
 
     @Lazy
     def content_type(self):
-        return self.environ.get("CONTENT_TYPE")
+        content_type = self.environ.get("CONTENT_TYPE")
+        if content_type:
+            return content_type.split(';')[0]
+        return None
 
 
     @Lazy
