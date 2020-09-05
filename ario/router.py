@@ -31,6 +31,10 @@ class RouteNode:
     def add_node(self, route, method, handler):
         method = [m.lower() for m in method]
         tokens = RouteNode.__tokenize_route(route)
+        if route == "/":
+            self.method = method
+            self.handler = handler
+            return
         routes = self.childs
         for i in range(len(tokens)):
             if len(routes) == 0:
