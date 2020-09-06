@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 from ario.request import Request
+from ario.response import Response
 
 
 @dataclass
@@ -123,20 +124,24 @@ class RouterController:
 
     def __call__(self, environ, start_response):
         req = Request(environ)
+        resp = Response()
+        resp['Status'] = '200 OK'
         method  = req.method
         path = req.path
-        print(path)
         handler, methods = self.routes.find_node(path)
-        print(methods)
         if methods == None or handler == None:
-            ret = self.routes.default(req, start_response)
+            ret = self.routes.default(req, resp)
+            start_response(resp.get('Status'), resp)
             return iter([ret])
         if method in methods:
             req = Request(environ)
             func = getattr(handler, method)
-            ret = func(req, start_response)
+            ret = func(req, resp)
+            start_response(resp.get('Status'), resp)
             return iter([ret])
-        self.routes.default(req, start_response)
+        ret = self.routes.default(req, resp)
+        start_response(resp.get('Status'), resp)
+        return iter([ret])
 
 
     def route(self, method=[], route=None, default=False):
