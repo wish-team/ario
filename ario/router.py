@@ -131,16 +131,17 @@ class RouterController:
         handler, methods = self.routes.find_node(path)
         if methods == None or handler == None:
             ret = self.routes.default(req, resp)
-            start_response(resp.get('Status'), resp)
+            start_response(resp.get('Status'), resp.items())
             return iter([ret])
         if method in methods:
             req = Request(environ)
             func = getattr(handler, method)
             ret = func(req, resp)
-            start_response(resp.get('Status'), resp)
+            print(resp.get('Status'))
+            start_response(resp.get('Status'), resp.items())
             return iter([ret])
         ret = self.routes.default(req, resp)
-        start_response(resp.get('Status'), resp)
+        start_response(resp.get('Status'), resp.items())
         return iter([ret])
 
 
