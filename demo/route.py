@@ -12,13 +12,12 @@ control = RouterController()
 @control.route(method=["GET", "PUT", "INSERT"], route="/user")
 class UserEndpoint(Endpoint):
     def get(request, response):
-        data = b'Hello, World!\n'
+        data = b'''
+        <title>user</title>
+        <h1>Hello World</h1>
+        '''
         status = '200 OK'
-        response_headers = [
-            ('Content-type', 'text/plain'),
-            ('Content-Length', str(len(data)))
-        ]
-        response(status, response_headers)
+        response.content_type = "text/html"
         return data
 
 
@@ -34,11 +33,22 @@ class UserEndpoint(Endpoint):
         return data
 
 
-@control.route(method=["GET", "POST"], route="/")
+@control.route(method=["GET", "POST", "HEAD"], route="/")
 class DashboardEndpoint(Endpoint):
     def get(request , response):
         data = b'This is Route\n'
         status = '200 OK'
+        response_headers = [
+            ('Content-type', 'text/plain'),
+            ('Content-Length', str(len(data)))
+        ]
+        response(status, response_headers)
+        return data
+
+
+    def head(request , response):
+        status = '200 OK'
+        data =  b'damn'
         response_headers = [
             ('Content-type', 'text/plain'),
             ('Content-Length', str(len(data)))
