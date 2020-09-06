@@ -1,3 +1,5 @@
+from http.cookies import SimpleCookie
+
 class Lazy:
     __slots__ = ('f', )
     def __init__(self, f):
@@ -37,3 +39,12 @@ class Request:
     @Lazy
     def path(self):
         return self.environ['PATH_INFO'].lower()
+
+
+    @Lazy
+    def cookies(self):
+        cookie = SimpleCookie()
+        if 'HTTP_COOKIE' in self.environ:
+            cookie.load(self.environ['HTTP_COOKIE'])
+        return cookie
+
