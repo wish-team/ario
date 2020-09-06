@@ -1,9 +1,16 @@
 from wsgiref.headers import Headers
 
 class Response(Headers):
-    def __init__(self, response_encoding=None):
-        self.response_encoding = response_encoding
+    __response_encoding = None
 
+    @property
+    def response_encoding(self):
+        return self.__response_encoding
+
+
+    @response_encoding.setter
+    def response_encoding(self, v):
+        self.__response_encoding = v
 
     @property
     def content_type(self):
@@ -25,5 +32,5 @@ class Response(Headers):
         if isinstance(buff, bytes):
             return buff
         if self.response_encoding:
-            return buff.encode(self.response_encoding)
+            return buff.encode(self.__response_encoding)
         return buff
