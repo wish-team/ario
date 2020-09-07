@@ -2,9 +2,10 @@ from wsgiref.headers import Headers
 from http.cookies import SimpleCookie
 
 class Response(Headers):
-    def __init__(self):
+    def __init__(self, start_response):
         __response_encoding = None
         __cookies = SimpleCookie()
+        self.start_response = start_response
 
 
     @property
@@ -31,6 +32,7 @@ class Response(Headers):
             del self['Content-Type']
         else:
             self['Content-Type'] = '%s; charset=%s' % (v, self.response_encoding)
+
 
 
     def cookie(self, name, value, options=None):
