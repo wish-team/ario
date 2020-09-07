@@ -124,7 +124,7 @@ class RouterController:
 
     def __call__(self, environ, start_response):
         req = Request(environ)
-        resp = Response()
+        resp = Response(start_response)
         resp['Status'] = '200 OK'
         method  = req.method
         path = req.path
