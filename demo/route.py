@@ -16,8 +16,9 @@ class UserEndpoint(Endpoint):
         <title>user</title>
         <h1>Hello World</h1>
         '''
-        status = '200 OK'
         response.content_type = "text/html"
+        response.cookie("key", "value", {"path": "/user"})
+        response.start()
         return data
 
 
