@@ -68,6 +68,7 @@ class Response(Headers):
         if options:
             for k, v in options.items():
                 self.__cookies[name][k] = v
+        return self
 
 
     def encode_response(self, buff):
