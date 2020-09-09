@@ -1,6 +1,5 @@
 from wsgiref.headers import Headers
 from http.cookies import SimpleCookie
-from status import StatusCode
 
 class Response(Headers):
     def __init__(self, start_response):
