@@ -6,11 +6,11 @@ class StatusCode:
         self.__text = text
 
     def __str__(self):
-        return f"{self.code} {self.text}"
+        return f"{self.__code} {self.__text}"
 
 
     def __repr__(self):
-        return f"{self.code} {self.text}"
+        return f"{self.__code} {self.__text}"
 
 status = StatusCode
 
