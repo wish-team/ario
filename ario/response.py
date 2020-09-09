@@ -1,5 +1,6 @@
 from wsgiref.headers import Headers
 from http.cookies import SimpleCookie
+from status import StatusCode
 
 class Response(Headers):
     def __init__(self, start_response):
@@ -27,9 +28,9 @@ class Response(Headers):
 
     @status.setter
     def status(self, v):
-        if v in None:
+        if v is None:
             return
-        self['Status'] = v
+        self['Status'] = v.__str__()
 
 
     @response_encoding.setter
