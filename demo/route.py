@@ -59,9 +59,18 @@ class DashboardEndpoint(Endpoint):
         return data
 
 
-@control.route(method=["GET", "POST"], route="/user/test")
+@control.route(method=["GET", "POST"], route="/user/$id")
 class DashboardEndpoint(Endpoint):
-    pass
+    def get(request, response, id):
+        response.content_type = "text/html"
+        body = f'''
+        <title>{id}<title>
+        <h1>{id}<h1>
+        '''
+        body = response.encode_response(body)
+        response.start()
+        return body
+
 
 
 @control.route(default=True)
