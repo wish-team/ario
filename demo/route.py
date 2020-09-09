@@ -5,7 +5,7 @@ PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
-from ario import RouterController, Endpoint, Application
+from ario import RouterController, Endpoint, Application, json
 
 control = RouterController()
 
@@ -36,14 +36,15 @@ class UserEndpoint(Endpoint):
 
 @control.route(method=["GET", "POST", "HEAD"], route="/")
 class DashboardEndpoint(Endpoint):
+    @json
     def get(request , response):
-        data = b'This is Route\n'
-        status = '200 OK'
-        response_headers = [
-            ('Content-type', 'text/plain'),
-            ('Content-Length', str(len(data)))
-        ]
-        response(status, response_headers)
+        data = {
+                "name": "shayan",
+                "family_name": "shafaghi",
+                "age": 21,
+                "phonenumber": "09197304252"
+                }
+        response.start()
         return data
 
 
