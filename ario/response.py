@@ -4,7 +4,7 @@ from http.cookies import SimpleCookie
 class Response(Headers):
     def __init__(self, start_response):
         super().__init__()
-        self.__response_encoding = None
+        self.__response_encoding = "utf-8"
         self.__cookies = SimpleCookie()
         self.start_response = start_response
         self['Status'] = '200 OK'
