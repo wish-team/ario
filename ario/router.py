@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import List
 from ario.request import Request
 from ario.response import Response
+from inspect import signature
 
 
 @dataclass
@@ -75,21 +76,24 @@ class RouteNode:
     def find_node(self, route):
         tokens = RouteNode.__tokenize_route(route)
         if route == self.path:
-            return (self.handler, self.method)
+            return (self.handler, self.method, None)
         routes = self.childs
+        args = None
         for i in range(len(tokens)):
             match_flag = False
             for (j, r) in enumerate(routes):
                 if r.path != tokens[i]:
+                    if len(tokens) - 1 == i and r.path[0] == '$':
+                        return (r.handler, r.method, tokens[i])
                     continue
                 match_flag = True
                 if len(tokens) - 1 == i:
-                    return (r.handler, r.method)
+                    return (r.handler, r.method, None)
                 else:
                     routes = r.childs
                 break
             if not match_flag:
-                return None, None
+                return None, None, None
 
 
     @staticmethod
@@ -127,13 +131,16 @@ class RouterController:
         resp = Response(start_response)
         method  = req.method
         path = req.path
-        handler, methods = self.routes.find_node(path)
+        handler, methods, arg = self.routes.find_node(path)
         if methods == None or handler == None:
             ret = self.routes.default(req, resp)
             return iter([ret])
         if method in methods:
             req = Request(environ)
             func = getattr(handler, method)
+            if arg and len(signature(func).parameters) == 3:
+                ret = func(req, resp, arg)
+                return iter([ret])
             ret = func(req, resp)
             return iter([ret])
         ret = self.routes.default(req, resp)
