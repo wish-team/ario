@@ -45,16 +45,6 @@ class Response(Headers):
         return None
 
 
-    def start(self):
-        cookie = self.__cookies.output()
-        if cookie:
-            for line in cookie.split('\r\n'):
-                print(line)
-                print(line.split(': '))
-                self.add_header(*line.split(': '))
-        self.start_response(self.status, self.items())
-
-
     @content_type.setter
     def content_type(self, v):
         if v is None:
@@ -77,5 +67,15 @@ class Response(Headers):
         if self.response_encoding:
             return buff.encode(self.__response_encoding)
         return buff
+
+
+    def start(self):
+        cookie = self.__cookies.output()
+        if cookie:
+            for line in cookie.split('\r\n'):
+                print(line)
+                print(line.split(': '))
+                self.add_header(*line.split(': '))
+        self.start_response(self.status, self.items())
 
 
