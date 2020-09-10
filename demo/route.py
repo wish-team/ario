@@ -5,21 +5,21 @@ PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
-from ario import RouterController, Endpoint, Application, json
+from ario import RouterController, Endpoint, Application, json, html
 
 control = RouterController()
 
 @control.route(method=["GET", "PUT", "INSERT"], route="/user")
 class UserEndpoint(Endpoint):
+    @html
     def get(request, response):
-        data = b'''
+        body = '''
         <title>user</title>
         <h1>Hello World</h1>
         '''
-        response.content_type = "text/html"
         response.cookie("key", "value", {"path": "/user"})
         response.start()
-        return data
+        return body
 
 
     def insert(request, response):
@@ -64,8 +64,8 @@ class DashboardEndpoint(Endpoint):
     def get(request, response, id):
         response.content_type = "text/html"
         body = f'''
-        <title>{id}<title>
-        <h1>{id}<h1>
+        <title>{id}</title>
+        <h1>{id}</h1>
         '''
         body = response.encode_response(body)
         response.start()
