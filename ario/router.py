@@ -40,8 +40,6 @@ class RouteNode:
         routes = self.childs
         for i in range(len(tokens)):
             if len(routes) == 0:
-                if isinstance(handler, Endpoint):
-                    handler = handler(method, route)
                 if len(tokens) - 1 == i:
                     node = RouteNode(method, tokens[i], handler, [])
                 else:
@@ -61,8 +59,6 @@ class RouteNode:
                     continue
                 if len(tokens) - 1 == i:
                     r.method = method
-                    if isinstance(handler, Endpoint):
-                        handler = handler(method, route)
                     r.handdler = handler
                 else:
                     routes = r.childs
@@ -132,6 +128,7 @@ class RouterController:
         method  = req.method
         path = req.path
         handler, methods, arg = self.routes.find_node(path)
+        print(handler)
         if methods == None or handler == None:
             ret = self.routes.default(req, resp)
             return iter([ret])
