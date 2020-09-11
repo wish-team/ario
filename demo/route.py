@@ -5,7 +5,9 @@ PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
-from ario import RouterController, Endpoint, Application, json, html
+from ario import RouterController, Endpoint, Application, json, html, setup_jinja, jinja
+
+setup_jinja("./templates")
 
 control = RouterController()
 
@@ -61,15 +63,11 @@ class DashboardEndpoint(Endpoint):
 
 @control.route(method=["GET", "POST"], route="/user/$id")
 class DashboardEndpoint(Endpoint):
+    @jinja("base.html")
     def get(request, response, id):
-        response.content_type = "text/html"
-        body = f'''
-        <title>{id}</title>
-        <h1>{id}</h1>
-        '''
-        body = response.encode_response(body)
+        params = {"my_string": id, "my_list": [0, 1, 2]}
         response.start()
-        return body
+        return params
 
 
 
