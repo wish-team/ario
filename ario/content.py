@@ -1,4 +1,5 @@
 from functools import wraps
+from status import moved_permanently
 import ujson
 
 
@@ -23,3 +24,14 @@ def html(handler):
         body = response.encode_response(body)
         return body
     return wrapper
+
+
+def redirect(url):
+    def decorator(handler):
+        @wraps(handler)
+        def wrapper(request, response):
+            response.status = moved_permanently()
+            response.location = url
+            return b'301 Moved Permanently' 
+        return wrapper
+    return decorator
