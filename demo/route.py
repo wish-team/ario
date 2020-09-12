@@ -64,9 +64,9 @@ class DashboardEndpoint(Endpoint):
 
 @control.route(method=['GET'], route="/foo")
 class RedirectEndpoint(Endpoint):
-    @redirect("/")
     def get(request, response):
-        pass
+        response.temp_redirect("/")
+        return b"302 Moved Temporarily"
 
 
 @control.route(default=True)
