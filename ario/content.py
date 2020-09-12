@@ -1,5 +1,5 @@
 from functools import wraps
-from ario.status import moved_temporarily
+from ario.status import moved_temporarily, moved_permanently
 import ujson
 
 
@@ -26,13 +26,19 @@ def html(handler):
     return wrapper
 
 
-def redirect(url):
+def redirect(url, perm=False):
     def decorator(handler):
         @wraps(handler)
-        def wrapper(request, response):
-            response.status = moved_temporarily()
+        def wrapper(request, response, *args):
+            ret = None
+            if not perm:
+                response.status = moved_temporarily()
+                ret = b'302 Moved Temporarily' 
+            else:
+                response.status = moved_permanently()
+                ret = b'301 Moved Permanently' 
             response.location = url
             response.start()
-            return b'302 Moved Temporarily' 
+            return ret
         return wrapper
     return decorator
