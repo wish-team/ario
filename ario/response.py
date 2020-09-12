@@ -1,5 +1,6 @@
 from wsgiref.headers import Headers
 from http.cookies import SimpleCookie
+from ario.status import moved_temporarily, moved_permanently
 
 class Response(Headers):
     def __init__(self, start_response):
@@ -84,6 +85,17 @@ class Response(Headers):
         else:
             self['Location'] = v
 
+
+    def perm_redirect(self, location):
+        self.location = location
+        self.status = moved_permanently()
+        self.start()
+
+
+    def temp_redirect(self, location):
+        self.location = location
+        self.status = moved_temporarily()
+        self.start()
 
 
     def cookie(self, name, value, options=None):
