@@ -5,7 +5,7 @@ PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
-from ario import RouterController, Endpoint, Application, json, html, setup_jinja, jinja
+from ario import RouterController, Endpoint, Application, json, html, setup_jinja, jinja, redirect
 
 setup_jinja("./templates")
 
@@ -23,17 +23,9 @@ class UserEndpoint(Endpoint):
         response.start()
         return body
 
-
+    @redirect("https://github.com/")
     def insert(request, response):
-        print("here")
-        data = b'Hello, World!\n'
-        status = '200 OK'
-        response_headers = [
-            ('Content-type', 'text/plain'),
-            ('Content-Length', str(len(data)))
-        ]
-        response(status, response_headers)
-        return data
+        pass
 
 
 @control.route(method=["GET", "POST", "HEAD"], route="/")
@@ -69,6 +61,12 @@ class DashboardEndpoint(Endpoint):
         response.start()
         return params
 
+
+@control.route(method=['GET'], route="/foo")
+class RedirectEndpoint(Endpoint):
+    @redirect("/")
+    def get(request, response):
+        pass
 
 
 @control.route(default=True)
