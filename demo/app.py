@@ -11,11 +11,11 @@ def controller(environ, start_response):
     """Simplest possible application object"""
     req = Request(environ)
     length = req.content_length
-    print(length)
+    print('length: ', length)
     met = req.method
-    print(met)
+    print('method: ',met)
     path = req.path
-    print(path)
+    print('path: ',path)
     data = b'Hello, World!\n'
     status = '200 OK'
     response_headers = [

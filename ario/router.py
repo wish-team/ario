@@ -13,9 +13,8 @@ class Endpoint:
     def __call__(self):
         print(f"{self.route} called with {self.method}")
 
-
     def __eq__(self, other):
-        if (self.method == other.method 
+        if (self.method == other.method
                 and self.route == other.route):
             return True
         else:
@@ -23,12 +22,11 @@ class Endpoint:
 
 
 class RouteNode:
-    def __init__(self, method, path, handler=None, childs=[]):
+    def __init__(self, method, path, handler=None, child=[]):
         self.method = method
         self.path = path
         self.handler = handler
-        self.childs = childs
-
+        self.child = child
 
     def add_node(self, route, method, handler):
         method = [m.lower() for m in method]
@@ -37,7 +35,7 @@ class RouteNode:
             self.method = method
             self.handler = handler
             return
-        routes = self.childs
+        routes = self.child
         for i in range(len(tokens)):
             if len(routes) == 0:
                 if len(tokens) - 1 == i:
@@ -45,7 +43,7 @@ class RouteNode:
                 else:
                     node = RouteNode([], tokens[i], [], [])
                 routes.append(node)
-                routes = node.childs
+                routes = node.child
                 continue
             for (j, r) in enumerate(routes):
                 if r.path != tokens[i]:
@@ -55,25 +53,23 @@ class RouteNode:
                         else:
                             node = RouteNode([], tokens[i], [], [])
                     routes.append(node)
-                    routes = node.childs
+                    routes = node.child
                     continue
                 if len(tokens) - 1 == i:
                     r.method = method
                     r.handdler = handler
                 else:
-                    routes = r.childs
+                    routes = r.child
                 break
-
 
     def add_default_node(self, handler):
         self.default = handler
-
 
     def find_node(self, route):
         tokens = RouteNode.__tokenize_route(route)
         if route == self.path:
             return (self.handler, self.method, None)
-        routes = self.childs
+        routes = self.child
         args = None
         for i in range(len(tokens)):
             match_flag = False
@@ -86,11 +82,10 @@ class RouteNode:
                 if len(tokens) - 1 == i:
                     return (r.handler, r.method, None)
                 else:
-                    routes = r.childs
+                    routes = r.child
                 break
             if not match_flag:
                 return None, None, None
-
 
     @staticmethod
     def __tokenize_route(route):
@@ -98,21 +93,18 @@ class RouteNode:
         tokens = route.split("/")
         return tokens
 
-
     def __repr__(self):
-        return f"path: {self.path}, methods: {self.method}, \n childs: {self.childs} \n"
+        return f"path: {self.path}, methods: {self.method}, \n child: {self.child} \n"
 
 
 class RouterController:
     __instance = None
-
 
     @staticmethod
     def get_instance():
         if RouterController.__instance is None:
             RouterController()
         return RouterController.__instance
-
 
     def __init__(self):
         if RouterController.__instance is None:
@@ -121,15 +113,14 @@ class RouterController:
         else:
             raise Exception("Controller already instantiated")
 
-
     def __call__(self, environ, start_response):
         req = Request(environ)
         resp = Response(start_response)
-        method  = req.method
+        method = req.method
         path = req.path
         handler, methods, arg = self.routes.find_node(path)
         print(handler)
-        if methods == None or handler == None:
+        if methods is None or handler is None:
             ret = self.routes.default(req, resp)
             return iter([ret])
         if method in methods:
@@ -143,7 +134,6 @@ class RouterController:
         ret = self.routes.default(req, resp)
         return iter([ret])
 
-
     def route(self, method=[], route=None, default=False):
         def wrapper(handler):
             if default:
@@ -151,6 +141,5 @@ class RouterController:
                 return
             self.routes.add_node(route, method, handler)
             print(self.routes)
+
         return wrapper
-
-
