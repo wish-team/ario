@@ -107,9 +107,10 @@ class RouterController:
             RouterController()
         return RouterController.__instance
 
-    def __init__(self):
+    def __init__(self, debug=False):
         if RouterController.__instance is None:
             self.routes = RouteNode([], "/", None)
+            self.debug = debug
             RouterController.__instance = self
         else:
             raise Exception("Controller already instantiated")
@@ -136,10 +137,15 @@ class RouterController:
             ret = self.routes.default(req, resp)
             return iter([ret])
         except Exception as ex:
-            tb = traceback.format_exc()
-            tb = resp.encode_response(tb)
-            resp.start()
-            return iter([tb])
+            if self.debug:
+                tb = traceback.format_exc()
+                tb = resp.encode_response(tb)
+                resp.start()
+                return iter([tb])
+            else:
+                ret = self.routes.default(req, resp)
+                return iter([ret])
+
 
 
     def route(self, method=[], route=None, default=False):
