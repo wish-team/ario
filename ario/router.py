@@ -3,6 +3,7 @@ from typing import List
 from ario.request import Request
 from ario.response import Response
 from inspect import signature
+import traceback
 
 
 @dataclass
@@ -50,10 +51,12 @@ class RouteNode:
                     if j == len(routes) - 1:
                         if len(tokens) - 1 == i:
                             node = RouteNode(method, tokens[i], handler, [])
+                            routes.append(node)
+                            routes = node.child
                         else:
                             node = RouteNode([], tokens[i], [], [])
-                    routes.append(node)
-                    routes = node.child
+                            routes.append(node)
+                            routes = node.child
                     continue
                 if len(tokens) - 1 == i:
                     r.method = method
@@ -106,9 +109,10 @@ class RouterController:
             RouterController()
         return RouterController.__instance
 
-    def __init__(self):
+    def __init__(self, debug=False):
         if RouterController.__instance is None:
             self.routes = RouteNode([], "/", None)
+            self.debug = debug
             RouterController.__instance = self
         else:
             raise Exception("Controller already instantiated")
@@ -116,23 +120,33 @@ class RouterController:
     def __call__(self, environ, start_response):
         req = Request(environ)
         resp = Response(start_response)
-        method = req.method
-        path = req.path
-        handler, methods, arg = self.routes.find_node(path)
-        print(handler)
-        if methods is None or handler is None:
+        try:
+            method = req.method
+            path = req.path
+            handler, methods, arg = self.routes.find_node(path)
+            print(handler)
+            if methods is None or handler is None:
+                ret = self.routes.default(req, resp)
+                return iter([ret])
+            if method in methods:
+                req = Request(environ)
+                func = getattr(handler, method)
+                if arg and len(signature(func).parameters) == 3:
+                    ret = func(req, resp, arg)
+                    return iter([ret])
+                ret = func(req, resp)
+                return iter([ret])
             ret = self.routes.default(req, resp)
             return iter([ret])
-        if method in methods:
-            req = Request(environ)
-            func = getattr(handler, method)
-            if arg and len(signature(func).parameters) == 3:
-                ret = func(req, resp, arg)
+        except Exception as ex:
+            if self.debug:
+                tb = traceback.format_exc()
+                tb = resp.encode_response(tb)
+                resp.start()
+                return iter([tb])
+            else:
+                ret = self.routes.default(req, resp)
                 return iter([ret])
-            ret = func(req, resp)
-            return iter([ret])
-        ret = self.routes.default(req, resp)
-        return iter([ret])
 
     def route(self, method=[], route=None, default=False):
         def wrapper(handler):
@@ -141,5 +155,6 @@ class RouterController:
                 return
             self.routes.add_node(route, method, handler)
             print(self.routes)
-
         return wrapper
+
+
