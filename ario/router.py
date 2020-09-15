@@ -51,10 +51,12 @@ class RouteNode:
                     if j == len(routes) - 1:
                         if len(tokens) - 1 == i:
                             node = RouteNode(method, tokens[i], handler, [])
+                            routes.append(node)
+                            routes = node.child
                         else:
                             node = RouteNode([], tokens[i], [], [])
-                    routes.append(node)
-                    routes = node.child
+                            routes.append(node)
+                            routes = node.child
                     continue
                 if len(tokens) - 1 == i:
                     r.method = method
@@ -146,8 +148,6 @@ class RouterController:
                 ret = self.routes.default(req, resp)
                 return iter([ret])
 
-
-
     def route(self, method=[], route=None, default=False):
         def wrapper(handler):
             if default:
@@ -155,7 +155,6 @@ class RouterController:
                 return
             self.routes.add_node(route, method, handler)
             print(self.routes)
-
         return wrapper
 
 
