@@ -2,3 +2,4 @@ venv
 ario-venv
 *.pyc
 *.pyo
+.idea
