@@ -3,6 +3,7 @@ from typing import List
 from ario.request import Request
 from ario.response import Response
 from inspect import signature
+import traceback
 
 
 @dataclass
@@ -116,23 +117,30 @@ class RouterController:
     def __call__(self, environ, start_response):
         req = Request(environ)
         resp = Response(start_response)
-        method = req.method
-        path = req.path
-        handler, methods, arg = self.routes.find_node(path)
-        print(handler)
-        if methods is None or handler is None:
+        try:
+            method = req.method
+            path = req.path
+            handler, methods, arg = self.routes.find_node(path)
+            print(handler)
+            if methods is None or handler is None:
+                ret = self.routes.default(req, resp)
+                return iter([ret])
+            if method in methods:
+                req = Request(environ)
+                func = getattr(handler, method)
+                if arg and len(signature(func).parameters) == 3:
+                    ret = func(req, resp, arg)
+                    return iter([ret])
+                ret = func(req, resp)
+                return iter([ret])
             ret = self.routes.default(req, resp)
             return iter([ret])
-        if method in methods:
-            req = Request(environ)
-            func = getattr(handler, method)
-            if arg and len(signature(func).parameters) == 3:
-                ret = func(req, resp, arg)
-                return iter([ret])
-            ret = func(req, resp)
-            return iter([ret])
-        ret = self.routes.default(req, resp)
-        return iter([ret])
+        except Exception as ex:
+            tb = traceback.format_exc()
+            tb = resp.encode_response(tb)
+            resp.start()
+            return iter([tb])
+
 
     def route(self, method=[], route=None, default=False):
         def wrapper(handler):
@@ -143,3 +151,5 @@ class RouterController:
             print(self.routes)
 
         return wrapper
+
+
