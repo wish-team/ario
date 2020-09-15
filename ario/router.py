@@ -124,7 +124,6 @@ class RouterController:
             method = req.method
             path = req.path
             handler, methods, arg = self.routes.find_node(path)
-            print(handler)
             if methods is None or handler is None:
                 ret = self.routes.default(req, resp)
                 return iter([ret])
@@ -143,6 +142,7 @@ class RouterController:
                 tb = traceback.format_exc()
                 tb = resp.encode_response(tb)
                 resp.start()
+                print("debuggggg", tb)
                 return iter([tb])
             else:
                 ret = self.routes.default(req, resp)
@@ -154,7 +154,6 @@ class RouterController:
                 self.routes.add_default_node(handler)
                 return
             self.routes.add_node(route, method, handler)
-            print(self.routes)
         return wrapper
 
 
