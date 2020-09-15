@@ -3,3 +3,4 @@ ario-venv
 *.pyc
 *.pyo
 .idea
+.log
