@@ -6,11 +6,12 @@ SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
 from ario import RouterController, Endpoint, Application, json, html, setup_jinja, jinja, redirect
-from ario.status import forbidden 
+from ario.status import forbidden
 
 setup_jinja("./templates")
 
 control = RouterController(debug=True)
+
 
 @control.route(method=["GET", "PUT", "INSERT"], route="/user")
 class UserEndpoint(Endpoint):
@@ -41,7 +42,6 @@ class DashboardEndpoint(Endpoint):
         }
         response.start()
         return data
-
 
     def head(request, response):
         status = '200 OK'
