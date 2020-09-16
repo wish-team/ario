@@ -54,6 +54,20 @@ class DashboardEndpoint(Endpoint):
         return data
 
 
+@control.route(method=["GET", "POST"], route="/user/profile")
+class DashboardEndpoint(Endpoint):
+    @html
+    def get(request, response):
+        body = '''
+            <title>profile</title>
+            <body>
+            <h1>This is user profile</h1>
+            </body>
+        '''
+        response.start()
+        return body
+
+
 @control.route(method=["GET", "POST"], route="/user/$id")
 class DashboardEndpoint(Endpoint):
     @jinja("base.html")
@@ -61,6 +75,20 @@ class DashboardEndpoint(Endpoint):
         params = {"my_string": id, "my_list": [0, 1, 2]}
         response.start()
         return params
+
+
+@control.route(method=["GET", "POST"], route="/user/profile")
+class DashboardEndpoint(Endpoint):
+    @html
+    def get(request, response):
+        body = '''
+            <title>profile</title>
+            <body>
+            <h1>This is user profile</h1>
+            </body>
+        '''
+        response.start()
+        return body
 
 
 @control.route(method=['GET'], route="/bug")
@@ -77,7 +105,7 @@ class RedirectEndpoint(Endpoint):
         return b"302 Moved Temporarily"
 
 
-@control.route(default=True)
+@control.default()
 @html
 def not_found(request, response):
     body = '''

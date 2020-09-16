@@ -41,18 +41,28 @@ class RouteNode:
             if len(routes) == 0:
                 if len(tokens) - 1 == i:
                     node = RouteNode(method, tokens[i], handler, [])
+                    if tokens[i][0] == "$":
+                        routes.append(node)
+                        routes = node.child
+                    else:
+                        routes.insert(0, node)
+                        routes = node.child
                 else:
                     node = RouteNode([], tokens[i], [], [])
-                routes.append(node)
-                routes = node.child
+                    routes.append(node)
+                    routes = node.child
                 continue
             for (j, r) in enumerate(routes):
                 if r.path != tokens[i]:
                     if j == len(routes) - 1:
                         if len(tokens) - 1 == i:
                             node = RouteNode(method, tokens[i], handler, [])
-                            routes.append(node)
-                            routes = node.child
+                            if tokens[i][0] == "$":
+                                routes.append(node)
+                                routes = node.child
+                            else:
+                                routes.insert(0, node)
+                                routes = node.child
                         else:
                             node = RouteNode([], tokens[i], [], [])
                             routes.append(node)
@@ -148,12 +158,15 @@ class RouterController:
                 ret = self.routes.default(req, resp)
                 return iter([ret])
 
-    def route(self, method=[], route=None, default=False):
+    def route(self, method=[], route=None):
         def wrapper(handler):
-            if default:
-                self.routes.add_default_node(handler)
-                return
             self.routes.add_node(route, method, handler)
+        return wrapper
+
+
+    def default(self):
+        def wrapper(handler):
+            self.routes.add_default_node(handler)
         return wrapper
 
 
