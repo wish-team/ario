@@ -77,6 +77,20 @@ class DashboardEndpoint(Endpoint):
         return params
 
 
+@control.route(method=["GET", "POST"], route="/user/profile")
+class DashboardEndpoint(Endpoint):
+    @html
+    def get(request, response):
+        body = '''
+            <title>profile</title>
+            <body>
+            <h1>This is user profile</h1>
+            </body>
+        '''
+        response.start()
+        return body
+
+
 @control.route(method=['GET'], route="/bug")
 class bug(Endpoint):
     def get(request, response):
