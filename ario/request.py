@@ -1,5 +1,6 @@
 from http.cookies import SimpleCookie
-import ujson
+import ujson 
+from urllib.parse import parse_qs
 
 
 class Lazy:
@@ -59,3 +60,14 @@ class Request:
             return ujson.decode(body)
         else:
             return str(body)
+
+
+    @Lazy
+    def query(self):
+        if 'QUERY_STRING' in self.environ:
+            return {k: v[0] if len(v) == 1 else v for k, v in parse_qs(
+                self.environ['QUERY_STRING'],
+                keep_blank_values=True,
+                strict_parsing=False
+            ).items()}
+        return {}
