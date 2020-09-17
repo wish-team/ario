@@ -1,4 +1,5 @@
 from http.cookies import SimpleCookie
+import ujson
 
 
 class Lazy:
@@ -22,7 +23,10 @@ class Request:
 
     @Lazy
     def content_length(self):
-        return self.environ.get("CONTENT_LENGTH")
+        length = self.environ.get("CONTENT_LENGTH")
+        if length:
+            return int(length.strip())
+        return None
 
     @Lazy
     def content_type(self):
@@ -45,3 +49,13 @@ class Request:
         if 'HTTP_COOKIE' in self.environ:
             cookie.load(self.environ['HTTP_COOKIE'])
         return cookie
+
+    @Lazy
+    def body(self):
+        if self.content_length is None:
+            raise Exception('Content-Length required')
+        body = self.environ['wsgi.input'].read(self.content_length)
+        if self.content_type == "application/json":
+            return ujson.decode(body)
+        else:
+            return str(body)

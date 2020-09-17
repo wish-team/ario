@@ -136,16 +136,15 @@ class RouterController:
             handler, methods, arg = self.routes.find_node(path)
             if methods is None or handler is None:
                 ret = self.routes.default(req, resp)
-                return iter([ret])
-            if method in methods:
+            elif method in methods:
                 req = Request(environ)
                 func = getattr(handler, method)
                 if arg and len(signature(func).parameters) == 3:
                     ret = func(req, resp, arg)
                     return iter([ret])
                 ret = func(req, resp)
-                return iter([ret])
-            ret = self.routes.default(req, resp)
+            else:
+                ret = self.routes.default(req, resp)
             return iter([ret])
         except Exception as ex:
             if self.debug:
