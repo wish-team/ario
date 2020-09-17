@@ -5,7 +5,8 @@ PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
-from ario import Application, RouterController, Endpoint, Request 
+from ario import Application, RouterController, Endpoint, Request
+
 
 def controller(environ, start_response):
     """Simplest possible application object"""
@@ -13,9 +14,9 @@ def controller(environ, start_response):
     length = req.content_length
     print('length: ', length)
     met = req.method
-    print('method: ',met)
+    print('method: ', met)
     path = req.path
-    print('path: ',path)
+    print('path: ', path)
     data = b'Hello, World!\n'
     status = '200 OK'
     response_headers = [
