@@ -1,4 +1,6 @@
-from gunicorn import sock
+from ario.application import Application
+from ario.router import RouterController, Endpoint
+from ario.jinja import jinja
 import os
 from werkzeug.middleware.shared_data import SharedDataMiddleware
 
@@ -24,9 +26,24 @@ class Ario:
         run_simple(host, port, self, use_reloader=True, **options)
 
 
-app = SharedDataMiddleware(app, {
+control = RouterController(debug=True)
+
+
+@control.route(method=["GET", "POST"], route="/user/$id")
+class DashboardEndpoint(Endpoint):
+    @jinja("base.html")
+    def get(request, response, id):
+        params = {"my_string": id, "my_list": [0, 1, 2]}
+        response.start()
+        return params
+
+
+app = SharedDataMiddleware(Application(control), {
     '/static': os.path.join(os.path.dirname(__file__), 'static')
 })
+
+if __name__ == '__main__':
+    print("Hello")
 
 # ario = Ario()
 # ario.run()

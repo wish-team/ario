@@ -152,7 +152,6 @@ class RouterController:
                 tb = traceback.format_exc()
                 tb = resp.encode_response(tb)
                 resp.start()
-                print("debuggggg", tb)
                 return iter([tb])
             else:
                 ret = self.routes.default(req, resp)
@@ -161,12 +160,11 @@ class RouterController:
     def route(self, method=[], route=None):
         def wrapper(handler):
             self.routes.add_node(route, method, handler)
-        return wrapper
 
+        return wrapper
 
     def default(self):
         def wrapper(handler):
             self.routes.add_default_node(handler)
+
         return wrapper
-
-

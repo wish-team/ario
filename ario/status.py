@@ -1,5 +1,6 @@
 from functools import partial
 
+
 class StatusCode:
     def __init__(self, code, text):
         self.__code = code
@@ -8,9 +9,9 @@ class StatusCode:
     def __str__(self):
         return f"{self.__code} {self.__text}"
 
-
     def __repr__(self):
         return f"{self.__code} {self.__text}"
+
 
 status = StatusCode
 
