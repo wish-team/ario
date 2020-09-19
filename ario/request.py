@@ -1,6 +1,7 @@
 from http.cookies import SimpleCookie
 import ujson 
 from urllib.parse import parse_qs
+from ario.exceptions import BadRequestError
 
 
 class Lazy:
@@ -57,7 +58,11 @@ class Request:
             raise Exception('Content-Length required')
         body = self.environ['wsgi.input'].read(self.content_length)
         if self.content_type == "application/json":
-            return ujson.decode(body)
+            try:
+                result = ujson.decode(body)
+                return result
+            except ValueError as e:
+                raise BadRequestError
         else:
             return str(body)
 
