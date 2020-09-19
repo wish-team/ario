@@ -18,7 +18,7 @@ pip install ario
 ## Usage
 First of all you should import classes that you want. ```RouterController, Endpoint, Application ``` should be imported and ```json, html, setup_jinja, jinja, redirect, forbidden, ok``` are arbitrary. 
 
-```
+```python
 from werkzeug.serving import run_simple
 from werkzeug.middleware.shared_data import SharedDataMiddleware
 from ario import RouterController, Endpoint, Application, json, jinja2
@@ -29,7 +29,7 @@ For seting up your template:
 setup_jinja("./templates")
 ```
 For instance if we want to define two endpoint that one of them is json and the latter is jinja, we should define them as below:
-```
+```python
 control = RouterController(debug=True)
 
 @control.route(method=["GET", "POST", "HEAD"], route="/")
@@ -51,7 +51,8 @@ class DashboardEndpoint(Endpoint):
         return params
 ```
 After all, we make a socket to our port use ```werkzeug```:
-```if __name__ == '__main__':
+```python
+if __name__ == '__main__':
     app = Application(control)
     app = SharedDataMiddleware(app, {
         '/static': os.path.join(os.path.dirname(__file__), 'templates/static')
