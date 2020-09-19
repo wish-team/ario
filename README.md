@@ -15,5 +15,50 @@ Install and update using pip:
 pip install ario
 ```
 
-## Loading 
+## Usage
+First of all you should import classes that you want. ```RouterController, Endpoint, Application ``` should be imported and ```json, html, setup_jinja, jinja, redirect, forbidden, ok``` are arbitrary. 
+
+```
+from werkzeug.serving import run_simple
+from werkzeug.middleware.shared_data import SharedDataMiddleware
+from ario import RouterController, Endpoint, Application, json, jinja2
+from ario.status import forbidden, ok
+
+```
+For seting up your template:
+```
+setup_jinja("./templates")
+```
+For instance if we want to define two endpoint that one of them is json and the latter is jinja, we should define them as below:
+```
+control = RouterController(debug=True)
+
+@control.route(method=["GET", "POST", "HEAD"], route="/")
+class DashboardEndpoint(Endpoint):
+    @json
+    def get(request, response):
+        data = {
+            "name": "john",
+            "family_name": "doe",
+            "age": 21,
+            "phonenumber": "12345678"
+        }
+        return data
+@control.route(method=["GET", "POST"], route="/user/$id")
+class DashboardEndpoint(Endpoint):
+    @jinja("base.html")
+    def get(request, response, id):
+        params = {"my_string": id, "my_list": [0, 1, 2]}
+        return params
+```
+After all, we make a socket to our port use ```werkzeug```:
+```if __name__ == '__main__':
+    app = Application(control)
+    app = SharedDataMiddleware(app, {
+        '/static': os.path.join(os.path.dirname(__file__), 'templates/static')
+    })
+    print('Demo server started http://localhost:5000')
+    run_simple('127.0.0.1', 5000, app, use_debugger=True, use_reloader=True)
+```
+You could run your code easily by just typing ```python yourfile.py```
 
