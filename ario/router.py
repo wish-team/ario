@@ -2,7 +2,9 @@ from dataclasses import dataclass
 from typing import List
 from ario.request import Request
 from ario.response import Response
+from ario.status import bad_request
 from inspect import signature
+from ario.exceptions import BadRequestError
 import traceback
 
 
@@ -146,6 +148,15 @@ class RouterController:
             else:
                 ret = self.routes.default(req, resp)
             resp.start()
+            return iter([ret])
+        except BadRequestError as ex:
+            if BadRequestError.handler is not None:
+                ret = BadRequestError.handler()
+                resp.start()
+            else:
+                ret = str(ex.status)
+                ret = resp.encode_response(ret)
+                resp.start()
             return iter([ret])
         except Exception as ex:
             if self.debug:
