@@ -34,18 +34,18 @@ For instance if we want to define two endpoint that one of them is json and the 
 control = RouterController(debug=True)
 
 @control.route(method=["GET", "POST", "HEAD"], route="/")
-class DashboardEndpoint(Endpoint):
+class ExampleEndpoint(Endpoint):
     @json
     def get(request, response):
         data = {
             "name": "john",
             "family_name": "doe",
             "age": 21,
-            "phonenumber": "12345678"
+            "phone_number": "12345678"
         }
         return data
 @control.route(method=["GET", "POST"], route="/user/$id")
-class DashboardEndpoint(Endpoint):
+class ExampleEndpoint(Endpoint):
     @jinja("base.html")
     def get(request, response, id):
         params = {"my_string": id, "my_list": [0, 1, 2]}
