@@ -111,7 +111,7 @@ def not_found(request, response):
     return body
 
 
-app = Application(control)
+# app = Application(control)
 
 if __name__ == '__main__':
     app = Application(control)
