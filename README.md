@@ -50,6 +50,7 @@ class DashboardEndpoint(Endpoint):
         params = {"my_string": id, "my_list": [0, 1, 2]}
         return params
 ```
+remeber for using jinja decorator, you should insert a ```base.html``` file in ```template``` folder
 After all, we make a socket to our port use ```werkzeug```:
 ```python
 if __name__ == '__main__':
