@@ -23,7 +23,6 @@ from werkzeug.serving import run_simple
 from werkzeug.middleware.shared_data import SharedDataMiddleware
 from ario import RouterController, Endpoint, Application, json, jinja2
 from ario.status import forbidden, ok
-
 ```
 For seting up your template:
 ```
