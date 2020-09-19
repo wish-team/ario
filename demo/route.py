@@ -4,6 +4,8 @@ import os
 PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
+from werkzeug.serving import run_simple
+from werkzeug.middleware.shared_data import SharedDataMiddleware
 
 from ario import RouterController, Endpoint, Application, json, html, setup_jinja, jinja, redirect
 from ario.status import forbidden, ok
@@ -109,4 +111,12 @@ def not_found(request, response):
     return body
 
 
-app = Application(control)
+# app = Application(control)
+
+if __name__ == '__main__':
+    app = Application(control)
+    app = SharedDataMiddleware(app, {
+        '/static': os.path.join(os.path.dirname(__file__), 'templates/static')
+    })
+    print('Demo server started http://localhost:5000')
+    run_simple('127.0.0.1', 5000, app, use_debugger=True, use_reloader=True)
