@@ -8,7 +8,7 @@ from werkzeug.serving import run_simple
 from werkzeug.middleware.shared_data import SharedDataMiddleware
 
 from ario import RouterController, Endpoint, Application, json, html, setup_jinja, jinja, redirect
-from ario.status import forbidden
+from ario.status import forbidden, ok
 
 setup_jinja("./templates")
 
@@ -24,7 +24,6 @@ class UserEndpoint(Endpoint):
         <h1>Hello World</h1>
         '''
         response.cookie("key", "value", {"path": "/user"})
-        response.start()
         return body
 
     @redirect("https://github.com/")
@@ -42,17 +41,6 @@ class DashboardEndpoint(Endpoint):
             "age": 21,
             "phonenumber": "09197304252"
         }
-        response.start()
-        return data
-
-    def head(request, response):
-        status = '200 OK'
-        data = b'damn'
-        response_headers = [
-            ('Content-type', 'text/plain'),
-            ('Content-Length', str(len(data)))
-        ]
-        response(status, response_headers)
         return data
 
 
@@ -66,7 +54,6 @@ class DashboardEndpoint(Endpoint):
             <h1>This is user profile</h1>
             </body>
         '''
-        response.start()
         return body
 
 
@@ -75,7 +62,6 @@ class DashboardEndpoint(Endpoint):
     @jinja("base.html")
     def get(request, response, id):
         params = {"my_string": id, "my_list": [0, 1, 2]}
-        response.start()
         return params
 
 
@@ -89,7 +75,6 @@ class DashboardEndpoint(Endpoint):
             <h1>This is user profile</h1>
             </body>
         '''
-        response.start()
         return body
 
 
@@ -100,11 +85,17 @@ class bug(Endpoint):
         return b"302 Moved Temporarily"
 
 
-@control.route(method=['GET'], route="/foo")
+@control.route(method=['GET', 'INSERT'], route="/foo")
 class RedirectEndpoint(Endpoint):
     def get(request, response):
         response.temp_redirect("/")
         return b"302 Moved Temporarily"
+
+    @json
+    def insert(request, response):
+        response.status = ok()
+        body = request.body
+        return body
 
 
 @control.default()
@@ -117,7 +108,6 @@ def not_found(request, response):
     </body>
     '''
     response.status = forbidden()
-    response.start()
     return body
 
 
