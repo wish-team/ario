@@ -10,24 +10,24 @@ class Error(Exception):
 class BadRequestError(Error):
     def __init__(self, message="Bad Request", status=bad_request()):
         self.status = status
-        super().__init__(message)
+        super().__init__(message, status)
 
 
 class UnauthorizedError(Error):
     def __init__(self, message="Unauthorized", status=unauthorized()):
         self.status = status
-        super().__init__(message)
+        super().__init__(message, status)
 
 
 class ForbidenError(Error):
     def __init__(self, message="Forbiden", status=forbidden()):
         self.status = status
-        super().__init__(message)
+        super().__init__(message, status)
 
 
 class NotFoundError(Error):
     def __init__(self, message="Not Found", status=not_found()):
         self.status = status
-        super().__init__(message)
+        super().__init__(message, status)
 
 
