@@ -23,6 +23,7 @@ class UserEndpoint(Endpoint):
         <title>user</title>
         <h1>Hello World</h1>
         '''
+        print(request.URI)
         response.cookie("key", "value", {"path": "/user"})
         return body
 
