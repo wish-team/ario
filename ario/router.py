@@ -6,6 +6,7 @@ from ario.status import bad_request
 from inspect import signature
 from ario.exceptions import BadRequestError
 import traceback
+import json
 
 
 @dataclass
@@ -15,6 +16,7 @@ class Endpoint:
 
     def __call__(self):
         print(f"{self.route} called with {self.method}")
+        print('ROUTE: ', self.route)
 
     def __eq__(self, other):
         if (self.method == other.method
@@ -179,4 +181,5 @@ class RouterController:
     def default(self):
         def wrapper(handler):
             self.routes.add_default_node(handler)
+
         return wrapper
