@@ -4,3 +4,7 @@ ario-venv
 *.pyo
 .idea
 .log
+.pypirc
+dist
+ario-egg-info
+build

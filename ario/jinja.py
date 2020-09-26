@@ -14,6 +14,7 @@ def setup_jinja(path):
 def jinja(path):
     def render(func):
         template = __env.get_template(path)
+
         def handler(request, response, *args):
             response.content_type = 'text/html'
             response.response_encoding = 'utf-8'
@@ -24,5 +25,7 @@ def jinja(path):
             else:
                 body = params
             return body
+
         return handler
+
     return render

@@ -48,6 +48,7 @@ class DashboardEndpoint(Endpoint):
 class DashboardEndpoint(Endpoint):
     @html
     def get(request, response):
+        print("REQ: ", request.file)
         body = '''
             <title>profile</title>
             <body>
@@ -96,6 +97,15 @@ class RedirectEndpoint(Endpoint):
         response.status = ok()
         body = request.body
         return body
+
+
+@control.route(method=['POST'], route='/file')
+class PostFile(Endpoint):
+    def post(request, response):
+        file = request.files
+        # print('The Uploaded file: ', file)
+        print('File: ', request.method)
+        return "hello"
 
 
 @control.default()
