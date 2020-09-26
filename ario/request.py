@@ -2,7 +2,7 @@ from http.cookies import SimpleCookie
 import ujson 
 from urllib.parse import parse_qs
 from ario.exceptions import BadRequestError
-
+import wsgiref.util as wsgiutil
 
 class Lazy:
     __slots__ = ('f',)
@@ -76,3 +76,8 @@ class Request:
                 strict_parsing=False
             ).items()}
         return {}
+
+
+    @Lazy
+    def URI(self):
+        return wsgiutil.request_uri(self.environ, include_query=True)
