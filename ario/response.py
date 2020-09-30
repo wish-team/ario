@@ -1,6 +1,7 @@
 from wsgiref.headers import Headers
 from http.cookies import SimpleCookie
 from ario.status import moved_temporarily, moved_permanently
+from datetime import datetime, timedelta
 
 
 class Response(Headers):
@@ -75,6 +76,13 @@ class Response(Headers):
             for k, v in options.items():
                 self.__cookies[name][k] = v
         return self
+
+    def remove_cookie(self, name):
+        self.__cookies[name] = ""
+        print(datetime.utcnow())
+        expires = datetime.utcnow()
+        expires = expires.strftime("%a, %d %b %Y %H:%M:%S GMT")
+        self.__cookies[name]['Expires'] = expires
 
     def encode_response(self, buff):
         if isinstance(buff, bytes):
