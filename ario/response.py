@@ -95,7 +95,5 @@ class Response(Headers):
         cookie = self.__cookies.output()
         if cookie:
             for line in cookie.split('\r\n'):
-                print(line)
-                print(line.split(': '))
                 self.add_header(*line.split(': '))
         self.start_response(self.status, self.items())
