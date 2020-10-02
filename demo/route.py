@@ -103,9 +103,9 @@ class RedirectEndpoint(Endpoint):
 @control.route(method=['POST'], route='/file')
 class PostFile(Endpoint):
     def post(request, response):
-        file = request.files
-        # print('The Uploaded file: ', file)
-        print('File: ', request.method)
+        print("here")
+        file = request.body
+        print('File: ', file)
         return "hello"
 
 

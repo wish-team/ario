@@ -3,6 +3,7 @@ import ujson
 from urllib.parse import parse_qs
 from ario.exceptions import BadRequestError
 import wsgiref.util as wsgiutil
+import cgi
 
 class Lazy:
     __slots__ = ('f',)
@@ -56,15 +57,22 @@ class Request:
     def body(self):
         if self.content_length is None:
             raise Exception('Content-Length required')
-        body = self.environ['wsgi.input'].read(self.content_length)
         if self.content_type == "application/json":
             try:
-                result = ujson.decode(body)
-                return result
+                body = self.environ['wsgi.input'].read(self.content_length)
+                body = ujson.decode(body)
             except ValueError as e:
                 raise BadRequestError
         else:
-            return str(body)
+            try:
+                body = cgi.FieldStorage(
+                    fp=environ['wsgi.input'],
+                    environ=self.envrion,
+                    keep_blank_values=True
+                )
+            except (TypeError, ValueError):
+                raise BadRequestError
+        return body
 
     @Lazy
     def files(self):
