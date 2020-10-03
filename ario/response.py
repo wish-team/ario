@@ -11,6 +11,7 @@ class Response(Headers):
         self.__cookies = SimpleCookie()
         self.start_response = start_response
         self['Status'] = '200 OK'
+        self.is_chunked = False
 
     @property
     def response_encoding(self):
