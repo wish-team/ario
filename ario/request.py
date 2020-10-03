@@ -66,8 +66,8 @@ class Request:
         else:
             try:
                 body = cgi.FieldStorage(
-                    fp=environ['wsgi.input'],
-                    environ=self.envrion,
+                    fp=self.environ['wsgi.input'],
+                    environ=self.environ,
                     keep_blank_values=True
                 )
             except (TypeError, ValueError):
