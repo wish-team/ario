@@ -9,6 +9,7 @@ from werkzeug.middleware.shared_data import SharedDataMiddleware
 
 from ario import RouterController, Endpoint, Application, json, html, setup_jinja, jinja, redirect
 from ario.status import forbidden, ok
+from ario.static import serve_static
 
 setup_jinja("./templates")
 
@@ -100,13 +101,17 @@ class RedirectEndpoint(Endpoint):
         return body
 
 
-@control.route(method=['POST'], route='/file')
+@control.route(method=['POST', 'GET'], route='/file')
 class PostFile(Endpoint):
     def post(request, response):
-        print("here")
         file = request.body
         print('File: ', file)
         return "hello"
+
+    def get(request, response):
+        file = serve_static("<path-to-file>", response)
+        return file
+
 
 
 @control.default()
