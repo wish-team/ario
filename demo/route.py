@@ -104,8 +104,18 @@ class RedirectEndpoint(Endpoint):
 @control.route(method=['POST', 'GET'], route='/file')
 class PostFile(Endpoint):
     def post(request, response):
-        file = request.body
-        print('File: ', file)
+        form = request.body
+        fileitem = form['userfile']
+        filename = fileitem.filename.replace('\\','/').split('/')[-1].strip()
+        with open(filename, 'wb') as f:
+            while True:
+                data = fileitem.file.read(1024)
+                if not data:
+                    break
+                f.write(data)
+        print('name: ', form['fname'].value)
+        print('last name: ', form['lname'].value)
+        print('None', form.getvalue('lnam'))
         return "hello"
 
     def get(request, response):
