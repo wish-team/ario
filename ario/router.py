@@ -150,6 +150,9 @@ class RouterController:
             else:
                 ret = self.routes.default(req, resp)
             resp.start()
+            if resp.is_chunked:
+                return ret()
+            ret = resp.encode_response(ret)
             return iter([ret])
         except BadRequestError as ex:
             resp.content_type = 'text/html'
