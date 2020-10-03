@@ -75,17 +75,6 @@ class Request:
         return body
 
     @Lazy
-    def files(self):
-        content_type = self.environ.get("CONTENT_TYPE")
-        if 'multipart/form-data' in content_type:
-            if self.content_length is None:
-                raise Exception('Content-Length required')
-            files = self.environ['wsgi.input'].read(self.content_length)
-            return files
-        else:
-            raise Exception('content type is not a file')
-
-    @Lazy
     def query(self):
         if 'QUERY_STRING' in self.environ:
             return {k: v[0] if len(v) == 1 else v for k, v in parse_qs(
