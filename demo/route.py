@@ -10,11 +10,15 @@ from werkzeug.middleware.shared_data import SharedDataMiddleware
 from ario import RouterController, Endpoint, Application, json, html, setup_jinja, jinja, redirect
 from ario.status import forbidden, ok
 from ario.static import serve_static
+from ario.exceptions import UnauthorizedError
 
 setup_jinja("./templates")
 
 control = RouterController(debug=True, langs=['fa', 'en'])
 
+def handler(message):
+    return b"Unauthorized error from handler"
+UnauthorizedError.handler = handler
 
 @control.route(method=["GET", "PUT", "INSERT"], route="/user")
 class UserEndpoint(Endpoint):
@@ -85,11 +89,14 @@ class DashboardEndpoint(Endpoint):
         return body
 
 
-@control.route(method=['GET'], route="/bug")
+@control.route(method=['GET', 'POST'], route="/bug")
 class bug(Endpoint):
     def get(request, response):
         raise Exception("This is an exception")
         return b"302 Moved Temporarily"
+
+    def post(request, response):
+        raise UnauthorizedError
 
 
 @control.route(method=['GET', 'INSERT'], route="/foo")
