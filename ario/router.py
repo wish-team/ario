@@ -4,7 +4,7 @@ from ario.request import Request
 from ario.response import Response
 from ario.status import bad_request
 from inspect import signature
-from ario.exceptions import BadRequestError
+from ario.exceptions import Error
 import traceback
 import json
 
@@ -174,10 +174,10 @@ class RouterController:
                 return ret()
             ret = resp.encode_response(ret)
             return iter([ret])
-        except BadRequestError as ex:
+        except Error as ex:
             resp.content_type = 'text/html'
-            if BadRequestError.handler is not None:
-                ret = BadRequestError.handler()
+            if ex.handler is not None:
+                ret = ex.handler()
                 resp.start()
             else:
                 ret = str(ex.status)
