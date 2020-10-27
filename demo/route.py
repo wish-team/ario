@@ -13,13 +13,17 @@ from ario.static import serve_static
 
 setup_jinja("./templates")
 
-control = RouterController(debug=True)
+control = RouterController(debug=True, langs=['fa', 'en'])
 
 
 @control.route(method=["GET", "PUT", "INSERT"], route="/user")
 class UserEndpoint(Endpoint):
     @html
     def get(request, response):
+        if not request.lang:
+            print("No lang is set")
+        else:
+            print("responsig from /", request.lang, "/user")
         body = '''
         <title>user</title>
         <h1>Hello World</h1>
