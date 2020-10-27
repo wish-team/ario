@@ -123,13 +123,23 @@ class RouterController:
             RouterController()
         return RouterController.__instance
 
-    def __init__(self, debug=False):
+    def __init__(self, debug=False, langs=[]):
         if RouterController.__instance is None:
+            self.__langs = langs
             self.routes = RouteNode([], "/", None)
             self.debug = debug
             RouterController.__instance = self
         else:
             raise Exception("Controller already instantiated")
+
+
+    def __find_language(self, path):
+        path = path.replace("/", "", 1)
+        tokens = path.split("/")
+        if tokens[0] in self.__langs:
+            return tokens[0]
+        return None
+
 
     def __call__(self, environ, start_response):
         req = Request(environ)
@@ -137,11 +147,21 @@ class RouterController:
         try:
             method = req.method
             path = req.path
+
+            # in case of /{lang}/other the {lang} is removed and set as an
+            # attribute in request and /other is processed as the path
+            lang = self.__find_language(path)
+            req.lang = lang
+            if lang:
+                if path == '/' + lang:
+                    path = '/'
+                else:
+                    path = path[len(lang) + 1:]
+
             handler, methods, arg = self.routes.find_node(path)
             if methods is None or handler is None:
                 ret = self.routes.default(req, resp)
             elif method in methods:
-                req = Request(environ)
                 func = getattr(handler, method)
                 if arg and len(signature(func).parameters) == 3:
                     ret = func(req, resp, arg)
