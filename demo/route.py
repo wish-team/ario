@@ -76,6 +76,15 @@ class DashboardEndpoint(Endpoint):
         return params
 
 
+@control.route(method=["GET", "POST"], route="/user_all/*id")
+class DashboardEndpoint(Endpoint):
+    @json
+    def get(request, response, id):
+        print(id)
+        params = {"my_string": id, "my_list": [0, 1, 2]}
+        return params
+
+
 @control.route(method=["GET", "POST"], route="/user/profile")
 class DashboardEndpoint(Endpoint):
     @html
