@@ -48,6 +48,9 @@ class RouteNode:
                     if tokens[i][0] == "$":
                         routes.append(node)
                         routes = node.child
+                    elif tokens[i][0] == "*":
+                        routes.append(node)
+                        routes = node.child
                     else:
                         routes.insert(0, node)
                         routes = node.child
@@ -62,6 +65,9 @@ class RouteNode:
                         if len(tokens) - 1 == i:
                             node = RouteNode(method, tokens[i], handler, [])
                             if tokens[i][0] == "$":
+                                routes.append(node)
+                                routes = node.child
+                            elif tokens[i][0] == "*":
                                 routes.append(node)
                                 routes = node.child
                             else:
@@ -94,6 +100,8 @@ class RouteNode:
                 if r.path != tokens[i]:
                     if len(tokens) - 1 == i and r.path[0] == '$':
                         return (r.handler, r.method, tokens[i])
+                    elif r.path[0] == '*':
+                        return (r.handler, r.method, tokens[i:])
                     continue
                 match_flag = True
                 if len(tokens) - 1 == i:
