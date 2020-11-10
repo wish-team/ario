@@ -186,10 +186,16 @@ class RouterController:
             resp.content_type = 'text/html'
             if ex.handler is not None:
                 ret = ex.handler()
+                resp.status = ex.status
                 resp.start()
             else:
-                ret = str(ex.status)
-                ret = resp.encode_response(ret)
+                if self.debug:
+                    ret = ex.message
+                    resp.status = ex.status
+                    ret = resp.encode_response(ret)
+                else:
+                    resp.status = ex.status
+                    ret = resp.encode_response(ret)
                 resp.start()
             return iter([ret])
         except Exception as ex:
@@ -199,14 +205,15 @@ class RouterController:
                 resp.start()
                 return iter([tb])
             else:
+                resp.status = bad_request()
                 ret = self.routes.default(req, resp)
                 resp.start()
                 return iter([ret])
 
+
     def route(self, method=[], route=None):
         def wrapper(handler):
             self.routes.add_node(route, method, handler)
-
         return wrapper
 
     def default(self):
