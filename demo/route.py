@@ -7,6 +7,7 @@ sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 from werkzeug.serving import run_simple
 from werkzeug.middleware.shared_data import SharedDataMiddleware
 
+from ario.document import Documentation, DocumentSpec
 from ario import RouterController, Endpoint, Application, json, html, setup_jinja, jinja, redirect
 from ario.status import forbidden, ok
 from ario.static import serve_static
@@ -15,10 +16,15 @@ from ario.exceptions import UnauthorizedError
 setup_jinja("./templates")
 
 control = RouterController(debug=True, langs=['fa', 'en'])
+documentation = DocumentSpec(port="5000", spec="route.py", debug=True)
+
 
 def handler(message):
     return b"Unauthorized error from handler"
+
+
 UnauthorizedError.handler = handler
+
 
 @control.route(method=["GET", "PUT", "INSERT"], route="/user")
 class UserEndpoint(Endpoint):
@@ -78,11 +84,26 @@ class DashboardEndpoint(Endpoint):
 
 @control.route(method=["GET", "POST"], route="/user_all/*id")
 class DashboardEndpoint(Endpoint):
+    @documentation.add_doc()
     @json
     def get(request, response, id):
+        """
+        format: JSON
+        title: get all users
+
+        id: bahador
+        password: 123456
+        """
         print(id)
         params = {"my_string": id, "my_list": [0, 1, 2]}
         return params
+
+    @documentation.add_doc()
+    def post(request, response):
+        """
+        hello : world
+        """
+        raise UnauthorizedError
 
 
 @control.route(method=["GET", "POST"], route="/user/profile")
@@ -123,10 +144,12 @@ class RedirectEndpoint(Endpoint):
 
 @control.route(method=['POST', 'GET'], route='/file')
 class PostFile(Endpoint):
+
     def post(request, response):
+        """Hello"""
         form = request.body
         fileitem = form['userfile']
-        filename = fileitem.filename.replace('\\','/').split('/')[-1].strip()
+        filename = fileitem.filename.replace('\\', '/').split('/')[-1].strip()
         with open(filename, 'wb') as f:
             while True:
                 data = fileitem.file.read(1024)
@@ -143,7 +166,6 @@ class PostFile(Endpoint):
         return file
 
 
-
 @control.default()
 @html
 def not_found(request, response):
@@ -157,12 +179,13 @@ def not_found(request, response):
     return body
 
 
-# app = Application(control)
+app = documentation
 
-if __name__ == '__main__':
-    app = Application(control)
-    app = SharedDataMiddleware(app, {
-        '/static': os.path.join(os.path.dirname(__file__), 'templates/static')
-    })
-    print('Demo server started http://localhost:5000')
-    run_simple('127.0.0.1', 5000, app, use_debugger=True, use_reloader=True)
+# print('document: ', documentation.function_name)
+# if __name__ == '__main__':
+#     app = Application(control)
+#     app = SharedDataMiddleware(app, {
+#         '/static': os.path.join(os.path.dirname(__file__), 'templates/static')
+#     })
+#     print('Demo server started http://localhost:5000')
+#     run_simple('127.0.0.1', 5000, app, use_debugger=True, use_reloader=True)

@@ -7,41 +7,31 @@ from werkzeug.serving import run_simple
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
 PACKAGE_PARENT = '..'
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
-from ario import RouterController, Endpoint, Application, jinja, setup_jinja, html
+from ario import RouterController, Endpoint, Application, jinja, setup_jinja, html, json
+from ario.document import Documentation, DocumentSpec
+
 from ario.status import forbidden
 
-
+documentation = DocumentSpec(port="5002", spec="run.py", debug=True)
 control = RouterController(debug=True)
 setup_jinja("./templates")
 
 
-@control.route(method=["GET", "POST"], route="/user/$id")
+@control.route(method=["GET", "POST"], route="/usersss/$id")
 class DashboardEndpoint(Endpoint):
-    @jinja("base.html")
+    @documentation.add_doc()
+    @json
     def get(request, response, id):
+        """
+        format: BN
+        title: post to db
+
+        user: XA
+        password: 222
+        """
+        # print(id)
         params = {"my_string": id, "my_list": [0, 1, 2]}
-        response.start()
         return params
 
 
-@control.default()
-@html
-def not_found(request, response):
-    body = '''
-    <title>Not Found</title>
-    <body>
-    <h1>404 Not Found</h1>
-    </body>
-    '''
-    response.status = forbidden()
-    response.start()
-    return body
-
-
-if __name__ == '__main__':
-    app = Application(control)
-    app = SharedDataMiddleware(app, {
-        '/static': os.path.join(os.path.dirname(__file__), 'templates/static')
-    })
-    print('Demo server started http://localhost:5000')
-    run_simple('127.0.0.1', 5000, app, use_debugger=True, use_reloader=True)
+app_2 = documentation
