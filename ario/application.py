@@ -2,7 +2,7 @@ from werkzeug.wrappers import Request, Response
 
 
 class Application:
-    def __init__(self, controller=None):
+    def __init__(self, controller):
         if controller is not None:
             self.controller = controller
 

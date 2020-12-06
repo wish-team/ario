@@ -2,9 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>List of APIs</title>
+    <link rel="stylesheet" href="static/style.css">
+{#    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">#}
+
 </head>
 <body>
-
+<h1>Ario Auto-Generated Documentation</h1>
+{% for x in list_of_docs %}
+    <div>Spec: {{ x.spec }}</div>
+    <div>Method: {{ x.method }}</div>
+    <div>Document: {{ x.document.format }}</div>
+{% endfor %}
 </body>
 </html>

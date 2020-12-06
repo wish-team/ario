@@ -7,12 +7,16 @@ from inspect import signature
 from ario.exceptions import Error
 import traceback
 import json
+import pickle
 
 
 @dataclass
 class Endpoint:
     method: List[str]
     route: str
+
+    def __init__(self):
+        print("init Endpoint")
 
     def __call__(self):
         print(f"{self.route} called with {self.method}")
@@ -132,14 +136,11 @@ class RouterController:
         return RouterController.__instance
 
     def __init__(self, debug=False, langs=[]):
-        if RouterController.__instance is None:
-            self.__langs = langs
-            self.routes = RouteNode([], "/", None)
-            self.debug = debug
-            RouterController.__instance = self
-        else:
-            raise Exception("Controller already instantiated")
-
+        self.__langs = langs
+        self.routes = RouteNode([], "/", None)
+        self.debug = debug
+        RouterController.__instance = self
+        # raise Exception("Controller already instantiated")
 
     def __find_language(self, path):
         path = path.replace("/", "", 1)
@@ -147,7 +148,6 @@ class RouterController:
         if tokens[0] in self.__langs:
             return tokens[0]
         return None
-
 
     def __call__(self, environ, start_response):
         req = Request(environ)

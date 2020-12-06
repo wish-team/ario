@@ -8,6 +8,7 @@ ario/jinja.py
 ario/request.py
 ario/response.py
 ario/router.py
+ario/static.py
 ario/status.py
 ario.egg-info/PKG-INFO
 ario.egg-info/SOURCES.txt
