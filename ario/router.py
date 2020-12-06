@@ -92,7 +92,16 @@ class RouteNode:
     def add_default_node(self, handler):
         self.default = handler
 
+
+    def remove_redundant_slash(self, route):
+        if route[-1] == '/':
+            return route[0:-1]
+        return route
+
+
     def find_node(self, route):
+        route = self.remove_redundant_slash(route)
+        print(route)
         tokens = RouteNode.__tokenize_route(route)
         if route == self.path:
             return (self.handler, self.method, None)
@@ -186,10 +195,16 @@ class RouterController:
             resp.content_type = 'text/html'
             if ex.handler is not None:
                 ret = ex.handler()
+                resp.status = ex.status
                 resp.start()
             else:
-                ret = str(ex.status)
-                ret = resp.encode_response(ret)
+                if self.debug:
+                    ret = ex.message
+                    resp.status = ex.status
+                    ret = resp.encode_response(ret)
+                else:
+                    resp.status = ex.status
+                    ret = resp.encode_response(ret)
                 resp.start()
             return iter([ret])
         except Exception as ex:
@@ -199,14 +214,15 @@ class RouterController:
                 resp.start()
                 return iter([tb])
             else:
+                resp.status = bad_request()
                 ret = self.routes.default(req, resp)
                 resp.start()
                 return iter([ret])
 
+
     def route(self, method=[], route=None):
         def wrapper(handler):
             self.routes.add_node(route, method, handler)
-
         return wrapper
 
     def default(self):
