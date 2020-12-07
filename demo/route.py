@@ -16,7 +16,7 @@ from ario.exceptions import UnauthorizedError
 setup_jinja("./templates")
 
 control = RouterController(debug=True, langs=['fa', 'en'])
-documentation = DocumentSpec(port="5000", spec="route.py", debug=True)
+documentation = DocumentSpec(port=5000, spec="Dashboard", description="Ario Demo route.py", debug=True)
 
 
 def handler(message):
@@ -50,7 +50,13 @@ class UserEndpoint(Endpoint):
 @control.route(method=["GET", "POST", "HEAD"], route="/")
 class DashboardEndpoint(Endpoint):
     @json
+    @documentation.add_doc()
     def get(request, response):
+        """
+        title: get the number
+        description: hello world
+        usage: dddddddd
+        """
         data = {
             "name": "shayan",
             "family_name": "shafaghi",
@@ -90,7 +96,7 @@ class DashboardEndpoint(Endpoint):
         """
         format: JSON
         title: get all users
-
+        route: /user_all/*id
         id: bahador
         password: 123456
         """

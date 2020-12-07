@@ -12,7 +12,7 @@ from ario.document import Documentation, DocumentSpec
 
 from ario.status import forbidden
 
-documentation = DocumentSpec(port="5002", spec="run.py", debug=True)
+documentation = DocumentSpec(port="5002", spec="run.py", description="Ario Demo run.py", debug=True)
 control = RouterController(debug=True)
 setup_jinja("./templates")
 
