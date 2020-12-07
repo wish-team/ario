@@ -1,13 +1,13 @@
 import sys
 import os
 
-PACKAGE_PARENT = '..'
+PACKAGE_PARENT = '../..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 from werkzeug.serving import run_simple
 from werkzeug.middleware.shared_data import SharedDataMiddleware
 
-from ario.document import Documentation, DocumentSpec
+from ario.document import DocumentSpec
 from ario import RouterController, Endpoint, Application, json, html, setup_jinja, jinja, redirect
 from ario.status import forbidden, ok
 from ario.static import serve_static
@@ -15,7 +15,7 @@ from ario.exceptions import UnauthorizedError
 
 setup_jinja("./templates")
 
-control = RouterController(debug=True, langs=['fa', 'en'])
+control = RouterController(debug=True)
 documentation = DocumentSpec(port=5000, spec="Dashboard", description="Ario Demo route.py", debug=True)
 
 
@@ -24,6 +24,37 @@ def handler(message):
 
 
 UnauthorizedError.handler = handler
+
+
+@control.route(method=["GET", "POST", "HEAD", "PUT"], route="/")
+class XEndpoint(Endpoint):
+    @documentation.add_doc(route="/")
+    @json
+    def get(request, response):
+        """
+        title: get the number
+        description: hello world
+        usage: dddddddd
+        """
+        data = {
+            "name": "shayan",
+            "family_name": "shafaghi",
+            "age": 21,
+            "phonenumber": "09197304252"
+        }
+        print("J")
+        return data
+
+    @documentation.add_doc(route="/")
+    def head(self):
+        """title: another test
+            example: hello world"""
+        pass
+
+    @documentation.add_doc(route="/")
+    def put(self):
+        """description: comment for put method"""
+        pass
 
 
 @control.route(method=["GET", "PUT", "INSERT"], route="/user")
@@ -49,36 +80,6 @@ class UserEndpoint(Endpoint):
         title: redirect to github
         description: its a test for insert method
         """
-        pass
-
-
-@control.route(method=["GET", "POST", "HEAD", "PUT"], route="/")
-class DashboardEndpoint(Endpoint):
-    @json
-    @documentation.add_doc(route="/")
-    def get(request, response):
-        """
-        title: get the number
-        description: hello world
-        usage: dddddddd
-        """
-        data = {
-            "name": "shayan",
-            "family_name": "shafaghi",
-            "age": 21,
-            "phonenumber": "09197304252"
-        }
-        return data
-
-    @documentation.add_doc(route="/")
-    def head(self):
-        """title: another test
-            example: hello world"""
-        pass
-
-    @documentation.add_doc(route="/")
-    def put(self):
-        """description: comment for put method"""
         pass
 
 
@@ -188,26 +189,26 @@ class PostFile(Endpoint):
         return file
 
 
-@control.default()
-@html
-def not_found(request, response):
-    body = '''
-    <title>Not Found</title>
-    <body>
-    <h1>404 Not Found</h1>
-    </body>
-    '''
-    response.status = forbidden()
-    return body
+# @control.default()
+# @html
+# def not_found(request, response):
+#     body = '''
+#     <title>Not Found</title>
+#     <body>
+#     <h1>404 Not Found</h1>
+#     </body>
+#     '''
+#     response.status = forbidden()
+#     return body
 
 
-app = documentation
+# app = documentation
 
 # print('document: ', documentation.function_name)
-# if __name__ == '__main__':
-#     app = Application(control)
-#     app = SharedDataMiddleware(app, {
-#         '/static': os.path.join(os.path.dirname(__file__), 'templates/static')
-#     })
-#     print('Demo server started http://localhost:5000')
-#     run_simple('127.0.0.1', 5000, app, use_debugger=True, use_reloader=True)
+if __name__ == '__main__':
+    app = Application(control)
+    app = SharedDataMiddleware(app, {
+        '/static': os.path.join(os.path.dirname(__file__), 'templates/static')
+    })
+    print('Demo server started http://localhost:5000')
+    run_simple('127.0.0.1', 5000, app, use_debugger=True, use_reloader=True)

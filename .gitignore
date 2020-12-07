@@ -6,6 +6,6 @@ ario-venv
 .log
 .pypirc
 dist
-ario-egg-info
+ario.egg-info
 build
 setup.py

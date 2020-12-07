@@ -19,7 +19,7 @@ setup_jinja("./templates")
 
 @control.route(method=["GET", "POST"], route="/usersss/$id")
 class DashboardEndpoint(Endpoint):
-    @documentation.add_doc()
+    @documentation.add_doc(route="/usersss/$id")
     @json
     def get(request, response, id):
         """

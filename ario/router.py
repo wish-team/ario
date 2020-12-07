@@ -14,9 +14,6 @@ class Endpoint:
     method: List[str]
     route: str
 
-    def __init__(self):
-        print("init Endpoint")
-
     def __call__(self):
         print(f"{self.route} called with {self.method}")
         print('ROUTE: ', self.route)
@@ -91,12 +88,10 @@ class RouteNode:
     def add_default_node(self, handler):
         self.default = handler
 
-
     def remove_redundant_slash(self, route):
         if route[-1] == '/':
             return route[0:-1]
         return route
-
 
     def find_node(self, route):
         route = self.remove_redundant_slash(route)
@@ -144,11 +139,14 @@ class RouterController:
         return RouterController.__instance
 
     def __init__(self, debug=False, langs=[]):
-        self.__langs = langs
-        self.routes = RouteNode([], "/", None)
-        self.debug = debug
-        RouterController.__instance = self
-        # raise Exception("Controller already instantiated")
+        if RouterController.__instance is None:
+            self.__langs = langs
+            self.routes = RouteNode([], "/", None)
+            self.debug = debug
+            self.document = {}
+            RouterController.__instance = self
+        else:
+            raise Exception("Controller already instantiated")
 
     def __find_language(self, path):
         path = path.replace("/", "", 1)
@@ -168,6 +166,7 @@ class RouterController:
             # attribute in request and /other is processed as the path
             lang = self.__find_language(path)
             req.lang = lang
+            print('path: ', path)
             if lang:
                 if path == '/' + lang:
                     path = '/'
@@ -175,6 +174,7 @@ class RouterController:
                     path = path[len(lang) + 1:]
 
             handler, methods, arg = self.routes.find_node(path)
+            print('handler', handler)
             if methods is None or handler is None:
                 ret = self.routes.default(req, resp)
             elif method in methods:
@@ -218,10 +218,10 @@ class RouterController:
                 resp.start()
                 return iter([ret])
 
-
     def route(self, method=[], route=None):
         def wrapper(handler):
             self.routes.add_node(route, method, handler)
+
         return wrapper
 
     def default(self):

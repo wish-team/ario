@@ -4,34 +4,68 @@
     <meta charset="UTF-8">
     <title>List of APIs</title>
     <link rel="stylesheet" href="static/style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,900;1,200&display=swap"
+          rel="stylesheet">
+
     {#    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">#}
-    <script>
-        window.appConfig = {
-            list_of_docs: '{{list_of_docs}}'
-        };
-        let meet = JSON.stringify(appConfig.list_of_docs);
-        let meet2 = JSON.parse(meet);
-        console.log(meet2)
-    </script>
 </head>
 <body>
 <div>
-    <h1>Ario Auto-Generated Documentation</h1>
+    <h1 class="header">Ario Auto-Generated Documentation</h1>
 </div>
 {% for x in list_of_docs %}
     <div class="api-class">
-        <h2>Specification: {{ x.general[0] }}</h2>
-        <h2>Port: {{ x.general[1] }}</h2>
-        <h2>Description: {{ x.general[2] }}</h2>
+        <h2>{{ x.general[0] }}</h2>
+        <h2>{{ x.general[1] }}</h2>
+        <h3 class="description">Description: "{{ x.general[2] }}"</h3>
         {% set count = 0 %}
-        {% for y in x.functions %}
+        {% for y in x.specific %}
             <div class="api-sub-class">
-                <p class="specification">Method: {{ y['method'] }}</p>
-                <p class="specification">{{ y['document'] }}</p>
+                <p class="method">Method: {{ y['method'] }}</p>
+                <p class="route">URL: {{ y['route'] }}</p>
+                <p class="code-box">{{ y['document'] }}</p>
             </div>
             {% set count = count + 1 %}
         {% endfor %}
     </div>
 {% endfor %}
 </body>
+<script type="text/javascript">
+
+    let method = document.getElementsByClassName("method");
+    for (let i = 0; i < method.length; i++) {
+        if (method[i].innerText === "Method: post") {
+            method[i].innerText = "POST";
+            method[i].classList.add("post-tag")
+        } else if (method[i].innerText === "Method: get") {
+            method[i].innerText = "GET";
+            method[i].classList.add("get-tag")
+        } else if (method[i].innerText === "Method: insert") {
+            method[i].innerText = "INSERT";
+            method[i].classList.add("insert-tag")
+        } else if (method[i].innerText === "Method: put") {
+            method[i].innerText = "PUT";
+            method[i].classList.add("put-tag")
+        } else {
+            let res = method[i].innerText;
+            console.log(res);
+            res = res.replace("Method: ", "");
+            console.log(res);
+            method[i].innerText = res.toLocaleUpperCase();
+            method[i].classList.add("other-tag")
+        }
+    }
+
+    let codeBox = document.getElementsByClassName("code-box");
+    for (let i = 0; i < codeBox.length; i++) {
+        {#console.log(codeBox[i].innerHTML);#}
+        codeBox[i].innerHTML = codeBox[i].innerHTML.replace(/,/g, ",<br>");
+        codeBox[i].innerHTML = codeBox[i].innerHTML.replace("{", "{<br>");
+        codeBox[i].innerHTML = codeBox[i].innerHTML.replace("}", "<br>}");
+
+        {#console.log(res_2);#}
+        {#codeBox[i].innerHTML = res_2#}
+    }
+</script>
 </html>

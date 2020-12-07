@@ -1,3 +1,4 @@
+MANIFEST.in
 README.md
 setup.py
 ario/__init__.py
@@ -15,3 +16,8 @@ ario.egg-info/SOURCES.txt
 ario.egg-info/dependency_links.txt
 ario.egg-info/requires.txt
 ario.egg-info/top_level.txt
+ario/document/__init__.py
+ario/document/api.py
+ario/document/ario_doc.py
+ario/document/templates/doc.html
+ario/document/templates/static/style.css

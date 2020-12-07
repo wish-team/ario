@@ -20,10 +20,13 @@ class DocumentSpec:
         self.debug = debug
         self.handler = ""
         self.dict_document = None
+        self.route = None
         self.docs = Documentation([], debug, self.spec, self.port, self.description)
         self.function_name = None
 
-    def add_doc(self):
+    def add_doc(self, route=None):
+        self.route = route
+
         def wrapper(handler):
             self.function_name = handler.__name__
             document = handler.__doc__.replace(" ", "").replace("\t", "").split("\n")
@@ -32,16 +35,16 @@ class DocumentSpec:
             self.dict_document = dict_document
             spec = self.spec
             port = self.port
-            self.docs.add_to_list(self.function_name, dict_document)
+            self.docs.add_to_list(self.route, self.function_name, dict_document)
 
         return wrapper
 
-    def merge(self, document_spec_obj):
+    def merge(self, document_spec_obj=None):
         field_to_be_check = "spec"
         field_to_be_check_2 = "port"
         field_to_be_check_3 = "description"
         primary = "general"
-        merge_name = 'functions'
+        merge_name = 'specific'
         grp = groupby(globals()['list_of_documents'],
                       key=lambda x: [x[field_to_be_check], x[field_to_be_check_2], x[field_to_be_check_3]])
         result = []
@@ -52,7 +55,7 @@ class DocumentSpec:
             group_list = list(group)
             func_dict[merge_name] = []
             for item in group_list:
-                item_set = {'method': item['method'], 'document': item['document']}
+                item_set = {'route': item['route'], 'method': item['method'], 'document': item['document']}
                 func_dict[merge_name].append(item_set)
 
             result.append(func_dict)
@@ -70,8 +73,8 @@ class Documentation:
         self.port = port
         self.description = description
 
-    def add_to_list(self, method, docs):
-        arr = {'spec': self.spec, 'port': self.port, 'description': self.description, 'method': method,
+    def add_to_list(self, route, method, docs):
+        arr = {'spec': self.spec, 'port': self.port, 'route': route, 'description': self.description, 'method': method,
                'document': docs}
         globals()['list_of_documents'].append(arr)
         self.documents_list = globals()['list_of_documents']
