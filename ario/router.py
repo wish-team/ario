@@ -139,14 +139,11 @@ class RouterController:
         return RouterController.__instance
 
     def __init__(self, debug=False, langs=[]):
-        if RouterController.__instance is None:
-            self.__langs = langs
-            self.routes = RouteNode([], "/", None)
-            self.debug = debug
-            self.document = {}
-            RouterController.__instance = self
-        else:
-            raise Exception("Controller already instantiated")
+        self.__langs = langs
+        self.routes = RouteNode([], "/", None)
+        self.debug = debug
+        self.document = {}
+        RouterController.__instance = self
 
     def __find_language(self, path):
         path = path.replace("/", "", 1)
