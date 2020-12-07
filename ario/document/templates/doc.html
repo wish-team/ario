@@ -4,15 +4,34 @@
     <meta charset="UTF-8">
     <title>List of APIs</title>
     <link rel="stylesheet" href="static/style.css">
-{#    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">#}
-
+    {#    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">#}
+    <script>
+        window.appConfig = {
+            list_of_docs: '{{list_of_docs}}'
+        };
+        let meet = JSON.stringify(appConfig.list_of_docs);
+        let meet2 = JSON.parse(meet);
+        console.log(meet2)
+    </script>
 </head>
 <body>
-<h1>Ario Auto-Generated Documentation</h1>
+<div>
+    <h1>Ario Auto-Generated Documentation</h1>
+</div>
 {% for x in list_of_docs %}
-    <div>Spec: {{ x.spec }}</div>
-    <div>Method: {{ x.method }}</div>
-    <div>Document: {{ x.document.format }}</div>
+    <div class="api-class">
+        <h2>Specification: {{ x.general[0] }}</h2>
+        <h2>Port: {{ x.general[1] }}</h2>
+        <h2>Description: {{ x.general[2] }}</h2>
+        {% set count = 0 %}
+        {% for y in x.functions %}
+            <div class="api-sub-class">
+                <p class="specification">Method: {{ y['method'] }}</p>
+                <p class="specification">{{ y['document'] }}</p>
+            </div>
+            {% set count = count + 1 %}
+        {% endfor %}
+    </div>
 {% endfor %}
 </body>
 </html>

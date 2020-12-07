@@ -7,7 +7,6 @@ from inspect import signature
 from ario.exceptions import Error
 import traceback
 import json
-import pickle
 
 
 @dataclass

@@ -73,14 +73,8 @@ class Documentation:
     def add_to_list(self, method, docs):
         arr = {'spec': self.spec, 'port': self.port, 'description': self.description, 'method': method,
                'document': docs}
-        list = []
         globals()['list_of_documents'].append(arr)
         self.documents_list = globals()['list_of_documents']
-        # print('LIST: ', globals()['list_of_documents'])
-
-        # print(globals()['list_of_documents'])
-
-        # Render(self.documents_list).run_document()
 
 
 class RenderDocument:
