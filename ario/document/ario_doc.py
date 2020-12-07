@@ -40,7 +40,7 @@ class DocumentSpec:
 
         return wrapper
 
-    def merge(self, document_spec_obj=None):
+    def merge(self, *args, **kwargs):
         field_to_be_check = "spec"
         field_to_be_check_2 = "port"
         field_to_be_check_3 = "description"
