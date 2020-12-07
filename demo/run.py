@@ -23,11 +23,11 @@ class DashboardEndpoint(Endpoint):
     @json
     def get(request, response, id):
         """
-        format: BN
-        title: post to db
+        format:  JINJA
+        title:  post to db
 
-        user: XA
-        password: 222
+        user:  test
+        password:  123456
         """
         # print(id)
         params = {"my_string": id, "my_list": [0, 1, 2]}

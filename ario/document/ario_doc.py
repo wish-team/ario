@@ -4,7 +4,6 @@ from werkzeug.wrappers import Response
 from ario import Application
 from werkzeug.serving import run_simple
 from werkzeug.middleware.shared_data import SharedDataMiddleware
-import json
 from itertools import groupby
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
@@ -29,8 +28,10 @@ class DocumentSpec:
 
         def wrapper(handler):
             self.function_name = handler.__name__
-            document = handler.__doc__.replace(" ", "").replace("\t", "").split("\n")
+            document = handler.__doc__.replace("  ", "").replace("\t", "").split("\n")
             document = list(filter(None, document))
+
+            print(document)
             dict_document = dict(s.split(":") for s in document)
             self.dict_document = dict_document
             spec = self.spec

@@ -19,14 +19,12 @@
         <h2>{{ x.general[0] }}</h2>
         <h2>{{ x.general[1] }}</h2>
         <h3 class="description">Description: "{{ x.general[2] }}"</h3>
-        {% set count = 0 %}
         {% for y in x.specific %}
             <div class="api-sub-class">
                 <p class="method">Method: {{ y['method'] }}</p>
                 <p class="route">URL: {{ y['route'] }}</p>
                 <p class="code-box">{{ y['document'] }}</p>
             </div>
-            {% set count = count + 1 %}
         {% endfor %}
     </div>
 {% endfor %}
@@ -59,13 +57,23 @@
 
     let codeBox = document.getElementsByClassName("code-box");
     for (let i = 0; i < codeBox.length; i++) {
-        {#console.log(codeBox[i].innerHTML);#}
-        codeBox[i].innerHTML = codeBox[i].innerHTML.replace(/,/g, ",<br>");
-        codeBox[i].innerHTML = codeBox[i].innerHTML.replace("{", "{<br>");
+        codeBox[i].innerHTML = codeBox[i].innerHTML.replace(/,/g, ",<br>&nbsp");
+        codeBox[i].innerHTML = codeBox[i].innerHTML.replace("{", "{<br>&nbsp&nbsp");
         codeBox[i].innerHTML = codeBox[i].innerHTML.replace("}", "<br>}");
-
-        {#console.log(res_2);#}
-        {#codeBox[i].innerHTML = res_2#}
     }
+
+    let apiSubClass = document.getElementsByClassName("api-sub-class");
+
+    for (let i = 0; i < apiSubClass.length; i++) {
+        let style = codeBox[i].style.display;
+        apiSubClass[i].addEventListener("click", function () {
+            if (codeBox[i].style.display === "block") {
+                codeBox[i].style.display = "none"
+            } else {
+                codeBox[i].style.display = "block";
+            }
+        })
+    }
+
 </script>
 </html>

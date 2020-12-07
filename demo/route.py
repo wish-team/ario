@@ -46,8 +46,8 @@ class UserEndpoint(Endpoint):
     @redirect("https://github.com/")
     def insert(request, response):
         """
-        title: redirect to github
-        description: its a test for insert method
+        title:  redirect to github
+        description:  its a test for insert method
         """
         pass
 
@@ -58,9 +58,9 @@ class DashboardEndpoint(Endpoint):
     @documentation.add_doc(route="/")
     def get(request, response):
         """
-        title: get the number
-        description: hello world
-        usage: dddddddd
+        title:  get the number
+        description:  hello world
+        usage:  dddddddd
         """
         data = {
             "name": "shayan",
@@ -72,13 +72,13 @@ class DashboardEndpoint(Endpoint):
 
     @documentation.add_doc(route="/")
     def head(self):
-        """title: another test
-            example: hello world"""
+        """title:  another test
+            example:  hello world"""
         pass
 
     @documentation.add_doc(route="/")
     def put(self):
-        """description: comment for put method"""
+        """description:  comment for put method"""
         pass
 
 
@@ -110,11 +110,11 @@ class DashboardEndpoint(Endpoint):
     @json
     def get(request, response, id):
         """
-        format: JSON
-        title: get all users
-        route: /user_all/*id
-        id: bahador
-        password: 123456
+        format:  JSON
+        title:  get all users
+        route:  /user_all/*id
+        id:  bahador
+        password:  123456
         """
         print(id)
         params = {"my_string": id, "my_list": [0, 1, 2]}
