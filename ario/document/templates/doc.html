@@ -16,14 +16,16 @@
 </div>
 {% for x in list_of_docs %}
     <div class="api-class">
-        <h2>{{ x.general[0] }}</h2>
+        <h2 class="spec">{{ x.general[0] }}</h2>
         <h2>{{ x.general[1] }}</h2>
         <h3 class="description">Description: "{{ x.general[2] }}"</h3>
         {% for y in x.specific %}
             <div class="api-sub-class">
                 <p class="method">Method: {{ y['method'] }}</p>
-                <p class="route">URL: {{ y['route'] }}</p>
-                <p class="code-box">{{ y['document'] }}</p>
+                <div class="drop-down-menu">
+                    <p class="route">URL: {{ y['route'] }}</p>
+                    <p class="code-box">{{ y['document'] }}</p>
+                </div>
             </div>
         {% endfor %}
     </div>
@@ -64,13 +66,14 @@
 
     let apiSubClass = document.getElementsByClassName("api-sub-class");
 
+    let dropDown = document.getElementsByClassName("drop-down-menu");
     for (let i = 0; i < apiSubClass.length; i++) {
         let style = codeBox[i].style.display;
         apiSubClass[i].addEventListener("click", function () {
-            if (codeBox[i].style.display === "block") {
-                codeBox[i].style.display = "none"
+            if (dropDown[i].style.display === "block") {
+                dropDown[i].style.display = "none"
             } else {
-                codeBox[i].style.display = "block";
+                dropDown[i].style.display = "block";
             }
         })
     }
