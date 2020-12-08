@@ -30,8 +30,6 @@ class DocumentSpec:
             self.function_name = handler.__name__
             document = handler.__doc__.replace("  ", "").replace("\t", "").split("\n")
             document = list(filter(None, document))
-
-            print(document)
             dict_document = dict(s.split(":") for s in document)
             self.dict_document = dict_document
             spec = self.spec
