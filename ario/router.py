@@ -80,7 +80,7 @@ class RouteNode:
                     continue
                 if len(tokens) - 1 == i:
                     r.method = method
-                    r.handdler = handler
+                    r.handler = handler
                 else:
                     routes = r.child
                 break
@@ -89,13 +89,12 @@ class RouteNode:
         self.default = handler
 
     def remove_redundant_slash(self, route):
-        if route[-1] == '/':
+        if route[-1] == '/' and len(route) > 1:
             return route[0:-1]
         return route
 
     def find_node(self, route):
         route = self.remove_redundant_slash(route)
-        print(route)
         tokens = RouteNode.__tokenize_route(route)
         if route == self.path:
             return (self.handler, self.method, None)
@@ -163,7 +162,6 @@ class RouterController:
             # attribute in request and /other is processed as the path
             lang = self.__find_language(path)
             req.lang = lang
-            print('path: ', path)
             if lang:
                 if path == '/' + lang:
                     path = '/'
@@ -171,7 +169,6 @@ class RouterController:
                     path = path[len(lang) + 1:]
 
             handler, methods, arg = self.routes.find_node(path)
-            print('handler', handler)
             if methods is None or handler is None:
                 ret = self.routes.default(req, resp)
             elif method in methods:
