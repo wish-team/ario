@@ -7,7 +7,6 @@ sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 from werkzeug.serving import run_simple
 from werkzeug.middleware.shared_data import SharedDataMiddleware
 
-from ario.document import Documentation, DocumentSpec
 from ario import RouterController, Endpoint, Application, json, html, setup_jinja, jinja, redirect
 from ario.status import forbidden, ok
 from ario.static import serve_static
@@ -16,17 +15,9 @@ from ario.exceptions import UnauthorizedError
 setup_jinja("./templates")
 
 control = RouterController(debug=True, langs=['fa', 'en'])
-documentation = DocumentSpec(port=5000, spec="Dashboard", description="Ario Demo route.py", debug=True)
 
 
-def handler(message):
-    return b"Unauthorized error from handler"
-
-
-UnauthorizedError.handler = handler
-
-
-@control.route(method=["GET", "PUT", "INSERT"], route="/user")
+@control.route(method=["GET", "PUT", "INSERT"], route="/user/cookie")
 class UserEndpoint(Endpoint):
     @html
     def get(request, response):
@@ -39,29 +30,30 @@ class UserEndpoint(Endpoint):
         <h1>Hello World</h1>
         '''
         print(request.URI)
-        response.cookie("key", "value", {"path": "/user"})
+        response.cookie("key", "value", path='/user')
         return body
 
-    @documentation.add_doc(route="/user")
     @redirect("https://github.com/")
     def insert(request, response):
-        """
-        title:  redirect to github
-        description:  its a test for insert method
-        """
         pass
 
 
-@control.route(method=["GET", "POST", "HEAD", "PUT"], route="/")
+@control.route(method=["GET"], route="/logout")
+class UserEndpoint(Endpoint):
+    @html
+    def get(request, response):
+        body = '''
+        <title>remove cookie</title>
+        <h1>Hello World!!</h1>
+        '''
+        response.remove_cookie("key", path='/user')
+        return body
+
+
+@control.route(method=["GET", "POST", "HEAD"], route="/")
 class DashboardEndpoint(Endpoint):
     @json
-    @documentation.add_doc(route="/")
     def get(request, response):
-        """
-        title:  get the number
-        description:  hello world
-        usage:  dddddddd
-        """
         data = {
             "name": "shayan",
             "family_name": "shafaghi",
@@ -69,17 +61,6 @@ class DashboardEndpoint(Endpoint):
             "phonenumber": "09197304252"
         }
         return data
-
-    @documentation.add_doc(route="/")
-    def head(self):
-        """title:  another test
-            example:  hello world"""
-        pass
-
-    @documentation.add_doc(route="/")
-    def put(self):
-        """description:  comment for put method"""
-        pass
 
 
 @control.route(method=["GET", "POST"], route="/user/profile")
@@ -106,26 +87,11 @@ class DashboardEndpoint(Endpoint):
 
 @control.route(method=["GET", "POST"], route="/user_all/*id")
 class DashboardEndpoint(Endpoint):
-    @documentation.add_doc(route="/user_all/*id")
     @json
     def get(request, response, id):
-        """
-        format:  JSON
-        title:  get all users
-        route:  /user_all/*id
-        id:  bahador
-        password:  123456
-        """
         print(id)
         params = {"my_string": id, "my_list": [0, 1, 2]}
         return params
-
-    @documentation.add_doc(route="/user_all/*id")
-    def post(request, response):
-        """
-        hello : world
-        """
-        raise UnauthorizedError
 
 
 @control.route(method=["GET", "POST"], route="/user/profile")
@@ -143,12 +109,12 @@ class DashboardEndpoint(Endpoint):
 
 @control.route(method=['GET', 'POST'], route="/bug")
 class bug(Endpoint):
-    def get(request, response):
+    def post(request, response):
         raise Exception("This is an exception")
         return b"302 Moved Temporarily"
 
-    def post(request, response):
-        raise UnauthorizedError
+    def get(request, response):
+        raise UnauthorizedError('abbas is here')
 
 
 @control.route(method=['GET', 'INSERT'], route="/foo")
@@ -166,12 +132,10 @@ class RedirectEndpoint(Endpoint):
 
 @control.route(method=['POST', 'GET'], route='/file')
 class PostFile(Endpoint):
-
     def post(request, response):
-        """Hello"""
         form = request.body
         fileitem = form['userfile']
-        filename = fileitem.filename.replace('\\', '/').split('/')[-1].strip()
+        filename = fileitem.filename.replace('\\','/').split('/')[-1].strip()
         with open(filename, 'wb') as f:
             while True:
                 data = fileitem.file.read(1024)
@@ -188,6 +152,7 @@ class PostFile(Endpoint):
         return file
 
 
+
 @control.default()
 @html
 def not_found(request, response):
@@ -201,13 +166,12 @@ def not_found(request, response):
     return body
 
 
-app = documentation
+# app = Application(control)
 
-# print('document: ', documentation.function_name)
-# if __name__ == '__main__':
-#     app = Application(control)
-#     app = SharedDataMiddleware(app, {
-#         '/static': os.path.join(os.path.dirname(__file__), 'templates/static')
-#     })
-#     print('Demo server started http://localhost:5000')
-#     run_simple('127.0.0.1', 5000, app, use_debugger=True, use_reloader=True)
+if __name__ == '__main__':
+    app = Application(control)
+    app = SharedDataMiddleware(app, {
+        '/static': os.path.join(os.path.dirname(__file__), 'templates/static')
+    })
+    print('Demo server started http://localhost:5000')
+    run_simple('127.0.0.1', 5000, app, use_debugger=True, use_reloader=True)

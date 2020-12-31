@@ -71,15 +71,17 @@ class Response(Headers):
         self.location = location
         self.status = moved_temporarily()
 
-    def cookie(self, name, value, options=None):
+    def cookie(self, name, value, options={}, path='/'):
+        options['path'] = path
         self.__cookies[name] = value
         if options:
             for k, v in options.items():
                 self.__cookies[name][k] = v
         return self
 
-    def remove_cookie(self, name):
+    def remove_cookie(self, name, path='/'):
         self.__cookies[name] = ""
+        self.__cookies[name]['path'] = path
         print(datetime.utcnow())
         expires = datetime.utcnow()
         expires = expires.strftime("%a, %d %b %Y %H:%M:%S GMT")
