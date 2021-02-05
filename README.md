@@ -1,4 +1,4 @@
-![Ario Python Micro Framework](./ARIO1.svg)
+<img style="width:50px" src="./ARIO1.svg">
 ![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg) [![Percentage of issues still open](http://isitmaintained.com/badge/open/Naereen/badges.svg)](http://isitmaintained.com/project/Naereen/badges "Percentage of issues still open")
 
 # Ario - Python Lightweight Micro Framework
