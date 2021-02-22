@@ -191,13 +191,9 @@ class RouterController:
                 resp.status = ex.status
                 resp.start()
             else:
-                if self.debug:
-                    ret = ex.message
-                    resp.status = ex.status
-                    ret = resp.encode_response(ret)
-                else:
-                    resp.status = ex.status
-                    ret = resp.encode_response(ret)
+                ret = ex.message
+                resp.status = ex.status
+                ret = resp.encode_response(ret)
                 resp.start()
             return iter([ret])
         except Exception as ex:
