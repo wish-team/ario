@@ -1,4 +1,4 @@
 Jinja2==2.11.2
-ujson==3.2.0
+ujson==5.4.0
 Werkzeug==1.0.1
 urllib3>=1.25.10
